@@ -1,0 +1,13 @@
+name: CurrentConverter
+options:
+  bundleIdPrefix: com.currentconverter
+  deploymentTarget:
+    iOS: "13.0"
+  xcodeVersion: "16.0"
+targets:
+  CurrentConverterApp:
+    type: application
+    platform: iOS
+    sources: [CurrencyConverter]
+    info:
+      path: CurrencyConverter/Info.plist
