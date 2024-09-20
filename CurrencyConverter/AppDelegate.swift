@@ -14,7 +14,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupWindow() {
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = MyViewController()
+        window?.rootViewController = HomeViewController()
         window?.makeKeyAndVisible()
     }
 }
