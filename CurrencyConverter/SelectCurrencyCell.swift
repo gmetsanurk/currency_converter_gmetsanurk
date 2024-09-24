@@ -7,7 +7,7 @@ protocol CustomizableCell {
 
 class SelectCurrencyCell: UICollectionViewCell, CustomizableCell {
     private unowned var label: UILabel!
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
 

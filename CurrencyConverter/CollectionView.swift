@@ -1,15 +1,25 @@
 import UIKit
 import SnapKit
 
+protocol CollectionViewSelectDelegate: AnyObject {
+    func onSelected(data: Any)
+}
+
+typealias CollectionViewSelectHandler = (Any) -> Void
+
 class CollectionView<CellType: UICollectionViewCell & CustomizableCell, DataType>: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate {
+    // private weak var selectDelegate: CollectionViewSelectDelegate?
+    private var handler: CollectionViewSelectHandler?
+
     var data: [DataType] = [] {
         didSet {
             reloadData()
         }
     }
 
-    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, handler: CollectionViewSelectHandler?) {
         super.init(frame: frame, collectionViewLayout: layout)
+        self.handler = handler
 
         register(CellType.self, forCellWithReuseIdentifier: "cell")
         dataSource = self
@@ -28,5 +38,12 @@ class CollectionView<CellType: UICollectionViewCell & CustomizableCell, DataType
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
         (cell as? CustomizableCell)?.setup(with: data[indexPath.item])
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedText = data[indexPath.item]
+
+        handler?(selectedText)
+        // selectDelegate?.onSelected(data: selectedText)
     }
 }

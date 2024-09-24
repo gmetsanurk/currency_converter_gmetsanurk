@@ -1,5 +1,8 @@
 import UIKit
 
+//let homeScreen = HomeViewController()
+//let selectCurrenciesScreen = SelectCurrencyScreen()
+
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
