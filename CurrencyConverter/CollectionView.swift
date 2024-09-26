@@ -8,23 +8,35 @@ protocol CollectionViewSelectDelegate: AnyObject {
 typealias CollectionViewSelectHandler = (Any) -> Void
 
 class CollectionView<CellType: UICollectionViewCell & CustomizableCell, DataType>: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate {
-    // private weak var selectDelegate: CollectionViewSelectDelegate?
-    private var handler: CollectionViewSelectHandler?
 
     var data: [DataType] = [] {
         didSet {
             reloadData()
         }
     }
-
-    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, handler: CollectionViewSelectHandler?) {
+    
+    #if USING_DELEGATES
+    private weak var selectDelegate: CollectionViewSelectDelegate?
+    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, selectDelegate: CollectionViewSelectDelegate?) {
         super.init(frame: frame, collectionViewLayout: layout)
-        self.handler = handler
+        self.selectDelegate = selectDelegate
 
         register(CellType.self, forCellWithReuseIdentifier: "cell")
         dataSource = self
         delegate = self
+        
     }
+    #else
+    private var handler: CollectionViewSelectHandler?
+    init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, handler: CollectionViewSelectHandler?) {
+         super.init(frame: frame, collectionViewLayout: layout)
+         self.handler = handler
+
+         register(CellType.self, forCellWithReuseIdentifier: "cell")
+         dataSource = self
+         delegate = self
+     }
+    #endif
     
     required init?(coder: NSCoder) {
         nil
@@ -42,8 +54,10 @@ class CollectionView<CellType: UICollectionViewCell & CustomizableCell, DataType
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedText = data[indexPath.item]
-
+        #if USING_DELEGATES
+        selectDelegate?.onSelected(data: selectedText)
+        #else
         handler?(selectedText)
-        // selectDelegate?.onSelected(data: selectedText)
+        #endif
     }
 }

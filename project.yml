@@ -10,6 +10,9 @@ packages:
     version: 5.7.1
 targets:
   CurrentConverterApp:
+    settings:
+      base:
+        #SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_DELEGATES'
     type: application
     platform: iOS
     sources: [CurrencyConverter]
