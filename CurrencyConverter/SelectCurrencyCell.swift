@@ -25,6 +25,6 @@ class SelectCurrencyCell: UICollectionViewCell, CustomizableCell {
     }
 
     func setup(with value: Any) {
-        label.text = value as? String
+        label.text = (value as? CurrencyType)?.code
     }
 }

@@ -11,7 +11,9 @@ class CollectionView<CellType: UICollectionViewCell & CustomizableCell, DataType
 
     var data: [DataType] = [] {
         didSet {
-            reloadData()
+            DispatchQueue.main.async { [weak self] in
+                self?.reloadData()
+            }
         }
     }
     

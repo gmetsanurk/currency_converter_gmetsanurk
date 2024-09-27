@@ -5,7 +5,8 @@ protocol SelectCurrencyScreenDelegate: AnyObject {
     func onCurrencySelected(currency: String)
 }
 
-typealias SelectCurrencyScreenHandler = (String) -> Void
+typealias CurrencyType = Currency
+typealias SelectCurrencyScreenHandler = (CurrencyType?) -> Void
 
 class SelectCurrencyScreen: UIViewController {
     #if USING_DELEGATES
@@ -13,6 +14,9 @@ class SelectCurrencyScreen: UIViewController {
     #else
     var onCurrencySelected: SelectCurrencyScreenHandler?
     #endif
+
+    private unowned var currenciesList: CollectionView<SelectCurrencyCell, CurrencyType>!
+    let networkManager = NetworkManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,17 +28,28 @@ class SelectCurrencyScreen: UIViewController {
         #if USING_DELEGATES
         let currenciesList = CollectionView<SelectCurrencyCell, String>(frame: .zero, collectionViewLayout: layout, selectDelegate: self)
         #else
-        let currenciesList = CollectionView<SelectCurrencyCell, String>(frame: .zero, collectionViewLayout: layout, handler: { [unowned self] currency in
-            self.onCurrencySelected?(currency as? String ?? "")
+        let currenciesList = CollectionView<SelectCurrencyCell, CurrencyType>(frame: .zero, collectionViewLayout: layout, handler: { [unowned self] currency in
+            self.onCurrencySelected?(currency as? CurrencyType)
             self.dismiss(animated: true)
         })
         #endif
-        
-        currenciesList.data = ["RUB", "KZT", "MNT", "KGS"]
+
         currenciesList.backgroundColor = .clear
         view.addSubview(currenciesList)
+        self.currenciesList = currenciesList
         currenciesList.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+
+        networkManager.getCurrencyData { [weak self] currencies in
+            guard let currencies else {
+                return
+            }
+
+            let data = CurrenciesProxy(currencies: currencies)
+            self?.currenciesList.data = data.currencies.map {
+                $0
+            }
         }
     }
 }
@@ -45,7 +60,7 @@ extension SelectCurrencyScreen: CollectionViewSelectDelegate {
         previousScreen?.onCurrencySelected(currency: data as? String ?? "")
         dismiss(animated: true)
         #else
-        onCurrencySelected?(data as? String ?? "")
+        onCurrencySelected?(data as? CurrencyType)
         #endif
     }
 }

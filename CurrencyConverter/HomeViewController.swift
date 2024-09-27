@@ -19,7 +19,7 @@ class HomeViewController: UIViewController {
         let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
             let selectCurrenciesScreen = SelectCurrencyScreen()
             selectCurrenciesScreen.onCurrencySelected = { [weak self] currency in
-                self?.selectedCurrencyLabel.text = currency
+                self?.selectedCurrencyLabel.text = currency?.fullName
                 print("cell text received \(currency)")
             }
             self.present(selectCurrenciesScreen, animated: true)
