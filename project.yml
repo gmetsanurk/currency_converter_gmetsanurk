@@ -8,6 +8,9 @@ packages:
   SnapKit:
     url: https://github.com/SnapKit/SnapKit
     version: 5.7.1
+  RealmSwift:
+    url: https://github.com/realm/realm-swift
+    version: 10.54.0
 targets:
   CurrentConverterApp:
     settings:
@@ -20,3 +23,4 @@ targets:
       path: CurrencyConverter/Info.plist
     dependencies:
       - package: SnapKit
+      - package: RealmSwift
