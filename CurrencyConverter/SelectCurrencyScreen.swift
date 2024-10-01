@@ -1,5 +1,6 @@
 import UIKit
 import SnapKit
+import RealmSwift
 
 protocol SelectCurrencyScreenDelegate: AnyObject {
     func onCurrencySelected(currency: String)
@@ -17,6 +18,7 @@ class SelectCurrencyScreen: UIViewController {
 
     private unowned var currenciesList: CollectionView<SelectCurrencyCell, CurrencyType>!
     let networkManager = NetworkManager()
+    let currenciesDataBase = CurrenciesDataBase()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,14 +42,22 @@ class SelectCurrencyScreen: UIViewController {
         currenciesList.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+            
+        let realm = try! Realm()
+        if realm.isEmpty {
+            networkManager.getCurrencyData { [weak self] currencies in
+                guard let currencies else {
+                    return
+                }
 
-        networkManager.getCurrencyData { [weak self] currencies in
-            guard let currencies else {
-                return
+                let data = CurrenciesProxy(currencies: currencies)
+                self?.currenciesList.data = data.currencies.map {
+                    $0
+                }
+                data.saveToRealm()
             }
-
-            let data = CurrenciesProxy(currencies: currencies)
-            self?.currenciesList.data = data.currencies.map {
+        } else {
+            self.currenciesList.data = currenciesDataBase.getDataFromRealm().map {
                 $0
             }
         }
