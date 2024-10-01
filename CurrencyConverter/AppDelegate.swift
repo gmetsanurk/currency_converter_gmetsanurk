@@ -1,6 +1,5 @@
 import UIKit
 import Swinject
-import RealmSwift
 
 //let homeScreen = HomeViewController()
 //let selectCurrenciesScreen = SelectCurrencyScreen()
