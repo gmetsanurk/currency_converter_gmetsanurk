@@ -18,7 +18,6 @@ class SelectCurrencyScreen: UIViewController {
 
     private unowned var currenciesList: CollectionView<SelectCurrencyCell, CurrencyType>!
     let networkManager = NetworkManager()
-    let currenciesDataBase = CurrenciesDataBase()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,11 +53,15 @@ class SelectCurrencyScreen: UIViewController {
                 self?.currenciesList.data = data.currencies.map {
                     $0
                 }
-                data.saveToRealm()
+                let localDatabase = container.resolve(LocalDatabase.self)
+                localDatabase?.save(currencies: currencies)
             }
         } else {
-            self.currenciesList.data = currenciesDataBase.getDataFromRealm().map {
-                $0
+            let localDatabase = container.resolve(LocalDatabase.self)
+            localDatabase?.loadCurrencies { [weak self] currencies in
+                self?.currenciesList.data = currencies.currencies.map {
+                    .init(code: $0.key, fullName: $0.value)
+                }
             }
         }
     }
