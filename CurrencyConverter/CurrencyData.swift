@@ -32,23 +32,4 @@ class CurrenciesProxy {
             .init(code: $0.key, fullName: $0.value)
         }
     }
-    
-    func saveToRealm() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-
-            let realm = try! Realm()
-            try! realm.write {
-                realm.add(self.currencies)
-            }
-        }
-    }
-}
-
-class CurrenciesDataBase {
-    func getDataFromRealm() -> Results<Currency> {
-        let realm = try! Realm()
-        let resultsArray: Results<Currency> = realm.objects(Currency.self)
-        return resultsArray
-    }
 }

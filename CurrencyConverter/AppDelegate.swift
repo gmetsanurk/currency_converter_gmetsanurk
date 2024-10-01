@@ -1,7 +1,21 @@
 import UIKit
+import Swinject
 
 //let homeScreen = HomeViewController()
 //let selectCurrenciesScreen = SelectCurrencyScreen()
+
+protocol LocalDatabase {
+    func save(currencies: Currencies)
+    func loadCurrencies(completion: @escaping (Currencies) -> Void)
+}
+
+let container = {
+    let container = Container()
+    container.register(LocalDatabase.self) { _ in
+        RealmLocalDatabase()
+    }
+    return container
+}()
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {

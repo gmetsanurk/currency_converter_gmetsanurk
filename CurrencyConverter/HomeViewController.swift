@@ -43,22 +43,6 @@ class HomeViewController: UIViewController {
             make.top.equalToSuperview().inset(300)
             make.centerX.equalTo(view)
         }
-        
-        
-        let buttonOpenRealmTestScreen = UIButton(primaryAction: UIAction { [unowned self] _ in
-            let realmTestScreen = RealmTestScreen()
-            self.present(realmTestScreen, animated: true)
-            realmTestScreen.dismiss(animated: true)
-        })
-        
-        buttonOpenRealmTestScreen.setTitle("Open Swift realm Test", for: .normal)
-        buttonOpenRealmTestScreen.setTitleColor(.white, for: .normal)
-        view.addSubview(buttonOpenRealmTestScreen)
-        
-        buttonOpenRealmTestScreen.snp.makeConstraints { make in
-            make.bottom.equalTo(view).inset(50)
-            make.centerX.equalTo(view)
-        }
     }
 }
 

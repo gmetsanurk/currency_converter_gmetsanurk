@@ -11,6 +11,9 @@ packages:
   RealmSwift:
     url: https://github.com/realm/realm-swift
     version: 10.49.0
+  Swinject:
+    url: https://github.com/Swinject/Swinject.git
+    version: 2.9.1
 targets:
   CurrentConverterApp:
     settings:
@@ -24,3 +27,4 @@ targets:
     dependencies:
       - package: SnapKit
       - package: RealmSwift
+      - package: Swinject
