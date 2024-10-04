@@ -1,12 +1,12 @@
 import UIKit
 import SnapKit
-import RealmSwift
 
 protocol SelectCurrencyScreenDelegate: AnyObject {
     func onCurrencySelected(currency: String)
 }
 
-typealias CurrencyType = Currency
+//typealias CurrencyType = RealmCurrency
+typealias CurrencyType = CoreDataCurrency
 typealias SelectCurrencyScreenHandler = (CurrencyType?) -> Void
 
 class SelectCurrencyScreen: UIViewController {
@@ -41,26 +41,28 @@ class SelectCurrencyScreen: UIViewController {
         currenciesList.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-            
-        let realm = try! Realm()
-        if realm.isEmpty {
+
+        guard let localDatabase = container.resolve(LocalDatabase.self) else {
+            return
+        }
+
+        if localDatabase.isEmptyCurrencies {
             networkManager.getCurrencyData { [weak self] currencies in
                 guard let currencies else {
                     return
                 }
-
+                
                 let data = CurrenciesProxy(currencies: currencies)
                 self?.currenciesList.data = data.currencies.map {
                     $0
                 }
-                let localDatabase = container.resolve(LocalDatabase.self)
-                localDatabase?.save(currencies: currencies)
+                // CoreDataManager.shared.logCoreDataDBPath()
+                localDatabase.save(currencies: currencies)
             }
         } else {
-            let localDatabase = container.resolve(LocalDatabase.self)
-            localDatabase?.loadCurrencies { [weak self] currencies in
+            localDatabase.loadCurrencies { [weak self] currencies in
                 self?.currenciesList.data = currencies.currencies.map {
-                    .init(code: $0.key, fullName: $0.value)
+                    .init(code: $0.key, fullName: $0.value, context: CoreDataManager.shared.persistentContainer.viewContext)
                 }
             }
         }

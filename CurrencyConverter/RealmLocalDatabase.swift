@@ -13,7 +13,7 @@ extension RealmLocalDatabase: LocalDatabase {
             }
             try? realm.write {
                 realm.add(currencies.currencies.map {
-                    Currency(code: $0.key, fullName: $0.value)
+                    RealmCurrency(code: $0.key, fullName: $0.value)
                 })
             }
         }
@@ -24,11 +24,15 @@ extension RealmLocalDatabase: LocalDatabase {
             guard let realm = try? Realm() else {
                 return
             }
-            let resultsArray: Results<Currency> = realm.objects(Currency.self)
+            let resultsArray: Results<RealmCurrency> = realm.objects(RealmCurrency.self)
             completion(Currencies.init(
             currencies: .init(resultsArray.map {
                 ($0.code, $0.fullName)
             }, uniquingKeysWith: { first, _ in first }), success: true))
         }
+    }
+
+    var isEmptyCurrencies: Bool {
+        (try? Realm().isEmpty) ?? true
     }
 }

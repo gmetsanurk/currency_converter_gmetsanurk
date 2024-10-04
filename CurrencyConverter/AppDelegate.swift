@@ -1,5 +1,6 @@
 import UIKit
 import Swinject
+import CoreData
 
 //let homeScreen = HomeViewController()
 //let selectCurrenciesScreen = SelectCurrencyScreen()
@@ -7,11 +8,13 @@ import Swinject
 protocol LocalDatabase {
     func save(currencies: Currencies)
     func loadCurrencies(completion: @escaping (Currencies) -> Void)
+    var isEmptyCurrencies: Bool { get }
 }
 
 let container = {
     let container = Container()
     container.register(LocalDatabase.self) { _ in
+        // CoreDataManager.shared
         RealmLocalDatabase()
     }
     return container
