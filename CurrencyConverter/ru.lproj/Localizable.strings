@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  CurrentConverter
+
+  Created by Georgy on 2024-10-10.
+  
+*/
+
+"home_view.select_source_currency" = "Выберите исходную валюту";
+"home_view.from" = "В валюте";
+"home_view.to" = " Перевод в";
+"home_view.convert" = "Конвертировать";
+"home_view.enter_amount" = "Введите количество";
+"home_view.done" = "Свернуть";

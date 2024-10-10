@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  CurrentConverter
+
+  Created by Georgy on 2024-10-10.
+  
+*/
+
+"home_view.select_source_currency" = "Select source currency";
+"home_view.from" = "From";
+"home_view.to" = "To";
+"home_view.convert" = "Convert";
+"home_view.enter_amount" = "Enter amount";
+"home_view.done" = "Done";

@@ -14,6 +14,24 @@ class RealmCurrency: Object {
     }
 }
 
+struct ConvertCurrency: Codable {
+    let info: Info
+    let query: Query
+    let result: Double
+    let success: Bool
+
+    struct Info: Codable {
+        let quote: Double
+        let timestamp: Int
+    }
+
+    struct Query: Codable {
+        let amount: Double
+        let from: String
+        let to: String
+    }
+}
+
 struct Currencies: Codable {
     let currencies: [String: String]
     let success: Bool
