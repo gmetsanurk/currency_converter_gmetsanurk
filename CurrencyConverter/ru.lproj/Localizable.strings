@@ -10,5 +10,6 @@
 "home_view.from" = "В валюте";
 "home_view.to" = " Перевод в";
 "home_view.convert" = "Конвертировать";
+"home_view.result" = "Результат";
 "home_view.enter_amount" = "Введите количество";
 "home_view.done" = "Свернуть";

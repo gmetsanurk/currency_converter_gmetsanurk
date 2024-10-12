@@ -1,57 +1,115 @@
+import Combine
 import Foundation
 
-class NetworkManager {
-    
+enum MyAppError: Error {
+    case invalidUrl
+    case networkError(additionalError: Error)
+}
+
+actor NetworkManager {
+
     private var key: String = "VyF3jyMSwtoyS0GqlIV7c793tm4TJhvP"
     
-    public func getCurrencyData(completion: @escaping (Currencies?) -> Void) {
-        var urlComponents = URLComponents(string: "https://api.apilayer.com")
-        urlComponents?.path = "/currency_data/list"
-        let url = urlComponents?.string ?? ""
-        var request = URLRequest(url: URL(string: url)!, timeoutInterval: Double.infinity)
-        request.httpMethod = "GET"
-        request.addValue(key, forHTTPHeaderField: "apikey")
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print(String(describing: error))
-                completion(nil)
-                return
-            }
-            guard let receivedString = String(data: data, encoding: .utf8) else {
-                completion(nil)
-                return
-            }
-            print(receivedString)
+    private var cancellables = Set<AnyCancellable>()
 
-            let result = try? JSONDecoder().decode(Currencies.self, from: data)
-            completion(result)
+    public func getCurrencyData() async throws -> Currencies {
+        var urlComponents = URLComponents(string: "https://api.apilayer.com")!
+        urlComponents.path = "/currency_data/list"
+        
+        guard let url = urlComponents.url else {
+            print("Invalid URL")
+            throw MyAppError.invalidUrl
         }
         
-        task.resume()
+        var request = URLRequest(url: url, timeoutInterval: Double.infinity)
+        request.httpMethod = "GET"
+        request.addValue(key, forHTTPHeaderField: "apikey")
+
+        return try await withCheckedThrowingContinuation { continuation in
+            var publisher: AnyCancellable?
+            publisher = URLSession.shared.dataTaskPublisher(for: request)
+            .tryMap { element -> Data in
+                
+                guard let response = element.response as? HTTPURLResponse,
+                      (200...299).contains(response.statusCode) else {
+                    throw URLError(.badServerResponse)
+                }
+                return element.data
+            }
+            .decode(type: Currencies.self, decoder: JSONDecoder())
+            .sink(
+                receiveCompletion: { status in
+                    switch status {
+                    case .finished:
+                        publisher = nil
+                        print("Request completed successfully")
+                    case .failure(let error):
+                        print("Request failed with error: \(error)")
+                        continuation.resume(throwing: MyAppError.networkError(additionalError: error))
+                    }
+                },
+                receiveValue: { currencies in
+                    print("Data received: \(currencies)")
+                    continuation.resume(returning: currencies)
+                }
+            )
+            }
     }
     
-    public func convertCurrencyData(to: String, from: String, amount: Int, completion: @escaping (ConvertCurrency?) -> Void){
-        let url = "https://api.apilayer.com/currency_data/convert?to=\(to)&from=\(from)&amount=\(amount)"
-        var request = URLRequest(url: URL(string: url)!,timeoutInterval: Double.infinity)
+    
+    public func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency {
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "https"
+        urlComponents.host = "api.apilayer.com"
+        urlComponents.path = "/currency_data/convert"
+        urlComponents.queryItems = [
+            URLQueryItem(name: "to", value: to),
+            URLQueryItem(name: "from", value: from),
+            URLQueryItem(name: "amount", value: String(amount))
+        ]
+        
+        guard let url = urlComponents.url else {
+            print("Invalid URL")
+            throw MyAppError.invalidUrl
+        }
+
+        var request = URLRequest(url: url, timeoutInterval: Double.infinity)
         request.httpMethod = "GET"
         request.addValue(key, forHTTPHeaderField: "apikey")
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print(String(describing: error))
-                return
+        return try await withCheckedThrowingContinuation { continuation in
+            var publisher: AnyCancellable?
+            publisher = URLSession.shared.dataTaskPublisher(for: request)
+            .tryMap { element -> Data in
+                guard let response = element.response as? HTTPURLResponse,
+                      (200...299).contains(response.statusCode) else {
+                    throw URLError(.badServerResponse)
+                }
+                return element.data
             }
-            guard let receivedString = String(data: data, encoding: .utf8) else {
-                completion(nil)
-                return
-            }
-            print(receivedString)
-            
-            let result = try? JSONDecoder().decode(ConvertCurrency.self, from: data)
-            completion(result)
+            .decode(type: ConvertCurrency.self, decoder: JSONDecoder())
+            .sink(
+                receiveCompletion: { status in
+                    switch status {
+                    case .finished:
+                        print("Request completed successfully")
+                        publisher = nil
+                    case .failure(let error):
+                        print("Request failed with error: \(error)")
+                        continuation.resume(throwing: MyAppError.networkError(additionalError: error))
+                    }
+                },
+                receiveValue: { convertedCurrency in
+                    print("Data received: \(convertedCurrency)")
+                    continuation.resume(returning: convertedCurrency)
+                }
+            )
         }
+    }
 
-        task.resume()
+    deinit {
+        print("NetworkManager.deinit")
     }
 }
+
+

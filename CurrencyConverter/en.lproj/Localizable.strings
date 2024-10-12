@@ -10,5 +10,6 @@
 "home_view.from" = "From";
 "home_view.to" = "To";
 "home_view.convert" = "Convert";
+"home_view.result" = "Result";
 "home_view.enter_amount" = "Enter amount";
 "home_view.done" = "Done";

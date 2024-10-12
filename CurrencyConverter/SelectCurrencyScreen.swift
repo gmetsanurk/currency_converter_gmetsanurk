@@ -47,17 +47,23 @@ class SelectCurrencyScreen: UIViewController {
         }
 
         if localDatabase.isEmptyCurrencies {
-            networkManager.getCurrencyData { [weak self] currencies in
-                guard let currencies else {
-                    return
+            Task { [weak self] in
+                do {
+                    guard let self else {
+                        return
+                    }
+
+                    let currencies = try await networkManager.getCurrencyData()
+
+                    let data = CurrenciesProxy(currencies: currencies)
+                    self.currenciesList.data = data.currencies.map {
+                        $0
+                    }
+                    // CoreDataManager.shared.logCoreDataDBPath()
+                    localDatabase.save(currencies: currencies)
+                } catch {
+
                 }
-                
-                let data = CurrenciesProxy(currencies: currencies)
-                self?.currenciesList.data = data.currencies.map {
-                    $0
-                }
-                // CoreDataManager.shared.logCoreDataDBPath()
-                localDatabase.save(currencies: currencies)
             }
         } else {
             localDatabase.loadCurrencies { [weak self] currencies in

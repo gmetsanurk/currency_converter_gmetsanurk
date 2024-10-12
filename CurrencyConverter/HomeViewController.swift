@@ -11,6 +11,8 @@ class HomeViewController: UIViewController {
     private var keyboardWillShowNotificationCancellable: AnyCancellable?
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
 
+    private let network = NetworkManager()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -160,20 +162,25 @@ extension HomeViewController {
             print("Fill all the blanks")
             return
         }
-        
-        NetworkManager().convertCurrencyData(to: toCurrency, from: fromCurrency, amount: amount) { [weak self] result in
-            guard let result = result else {
-                print("Convertation Error")
+
+        Task { @MainActor [weak self] in
+            guard let self else {
                 return
             }
-            
-            if result.success {
-                //print("Convert Summ: \(result.result)")
-                DispatchQueue.main.async { [weak self] in
-                    self?.selectedCurrencyLabel.text = "Result: \(result.result)"
+
+            do {
+                let result = try await network.convertCurrencyData(to: toCurrency, from: fromCurrency, amount: amount)
+
+                if result.success {
+                    //print("Convert Summ: \(result.result)")
+                    DispatchQueue.main.async { [weak self] in
+                        self?.selectedCurrencyLabel.text = "\(NSLocalizedString("home_view.result", comment: "Convertation result")): \(result.result)"
+                    }
+                } else {
+                    print("Cannot complete convertation")
                 }
-            } else {
-                print("Cannot complete convertation")
+            } catch {
+
             }
         }
     }
