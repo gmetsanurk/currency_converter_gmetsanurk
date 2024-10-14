@@ -17,7 +17,6 @@ class SelectCurrencyScreen: UIViewController {
     #endif
 
     private unowned var currenciesList: CollectionView<SelectCurrencyCell, CurrencyType>!
-    let networkManager = NetworkManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,7 +52,10 @@ class SelectCurrencyScreen: UIViewController {
                         return
                     }
 
-                    let currencies = try await networkManager.getCurrencyData()
+                    guard let manager = container.resolve(RemoteDataSource.self) else {
+                        return
+                    }
+                    let currencies = try await manager.getCurrencyData()
 
                     let data = CurrenciesProxy(currencies: currencies)
                     self.currenciesList.data = data.currencies.map {

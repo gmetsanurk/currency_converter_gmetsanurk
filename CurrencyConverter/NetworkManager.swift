@@ -6,7 +6,7 @@ enum MyAppError: Error {
     case networkError(additionalError: Error)
 }
 
-actor NetworkManager {
+actor NetworkManager: RemoteDataSource{
 
     private var key: String = "VyF3jyMSwtoyS0GqlIV7c793tm4TJhvP"
     

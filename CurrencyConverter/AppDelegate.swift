@@ -12,7 +12,7 @@ protocol LocalDatabase {
 }
 
 protocol RemoteDataSource {
-    func loadCurrencies(completion: @escaping (Currencies) -> Void)
+    func getCurrencyData() async throws -> Currencies
 }
 
 let container = {
@@ -21,9 +21,10 @@ let container = {
         // CoreDataManager.shared
         RealmLocalDatabase()
     }
-    //container.register(RemoteDataSource.self) { _ in
-
-    //}
+    container.register(RemoteDataSource.self) { _ in
+        //NetworkManager()
+        LocalManager()
+    }
     return container
 }()
 
