@@ -6,13 +6,17 @@ enum MyAppError: Error {
     case networkError(additionalError: Error)
 }
 
-actor NetworkManager: RemoteDataSource{
+public actor NetworkManager {
 
     private var key: String = "VyF3jyMSwtoyS0GqlIV7c793tm4TJhvP"
     
     private var cancellables = Set<AnyCancellable>()
 
-    public func getCurrencyData() async throws -> Currencies {
+    public init() {
+
+    }
+
+    func getCurrencyData() async throws -> Currencies {
         var urlComponents = URLComponents(string: "https://api.apilayer.com")!
         urlComponents.path = "/currency_data/list"
         
@@ -53,10 +57,9 @@ actor NetworkManager: RemoteDataSource{
                     continuation.resume(returning: currencies)
                 }
             )
-            }
+        }
     }
-    
-    
+
     public func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
@@ -107,9 +110,4 @@ actor NetworkManager: RemoteDataSource{
         }
     }
 
-    deinit {
-        print("NetworkManager.deinit")
-    }
 }
-
-

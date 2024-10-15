@@ -1,6 +1,7 @@
 import UIKit
 import Swinject
 import CoreData
+import NetworkManager
 
 //let homeScreen = HomeViewController()
 //let selectCurrenciesScreen = SelectCurrencyScreen()

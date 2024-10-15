@@ -14,6 +14,8 @@ packages:
   Swinject:
     url: https://github.com/Swinject/Swinject.git
     version: 2.9.1
+  NetworkManager:
+    path: NetworkManager
 targets:
   CurrentConverterApp:
     settings:
@@ -28,3 +30,12 @@ targets:
       - package: SnapKit
       - package: RealmSwift
       - package: Swinject
+      - package: NetworkManager
+      #- target: NetworkManager
+
+#  NetworkManager:
+#    type: framework
+#    platform: iOS
+#    sources: [NetworkManager]
+#    info:
+#      path: NetworkManager/Info.plist

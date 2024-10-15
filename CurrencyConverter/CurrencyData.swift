@@ -2,6 +2,7 @@ import Dispatch
 import RealmSwift
 import CoreData
 import UIKit
+import NetworkManager
 
 class RealmCurrency: Object {
     @Persisted var code: String
@@ -12,29 +13,6 @@ class RealmCurrency: Object {
         self.code = code
         self.fullName = fullName
     }
-}
-
-struct ConvertCurrency: Codable {
-    let info: Info
-    let query: Query
-    let result: Double
-    let success: Bool
-
-    struct Info: Codable {
-        let quote: Double
-        let timestamp: Int
-    }
-
-    struct Query: Codable {
-        let amount: Double
-        let from: String
-        let to: String
-    }
-}
-
-struct Currencies: Codable {
-    let currencies: [String: String]
-    let success: Bool
 }
 
 class CurrenciesProxy {

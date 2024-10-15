@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import CoreData
+import NetworkManager
 
 class CoreDataManager {
     public static let shared = CoreDataManager()

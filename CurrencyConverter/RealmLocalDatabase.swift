@@ -1,5 +1,6 @@
 import Dispatch
 import RealmSwift
+import NetworkManager
 
 struct RealmLocalDatabase {
 

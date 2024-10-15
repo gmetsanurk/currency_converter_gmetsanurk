@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import SnapKit
+import NetworkManager
 
 class HomeViewController: UIViewController {
     private var selectedCurrencyLabel = UILabel()
