@@ -78,7 +78,7 @@ public actor NetworkManager {
 
         var request = URLRequest(url: url, timeoutInterval: Double.infinity)
         request.httpMethod = "GET"
-        request.addValue(key, forHTTPHeaderField: "apikey")
+        await request.addValue(key, forHTTPHeaderField: "apikey")
 
         return try await withCheckedThrowingContinuation { continuation in
             var publisher: AnyCancellable?

@@ -16,12 +16,11 @@ class RealmCurrency: Object {
 }
 
 class CurrenciesProxy {
-    //let currencies: [RealmCurrency]
     let currencies: [CoreDataCurrency]
     
-    init(currencies: Currencies) {
-        self.currencies = currencies.currencies.map {
-            .init(code: $0.key, fullName: $0.value, context: CoreDataManager.shared.persistentContainer.viewContext)
+    init(currencies: Currencies) async {
+        self.currencies = await currencies.currencies.asyncMap {
+            await .init(code: $0.key, fullName: $0.value)
         }
     }
     
@@ -41,7 +40,8 @@ extension CoreDataCurrency {
     @NSManaged public var code: String?
     @NSManaged public var fullName: String?
     
-    convenience init(code: String, fullName: String, context: NSManagedObjectContext) {
+    convenience init(code: String, fullName: String) async {
+        let context = await CoreDataManager.shared.persistentContainer.viewContext
         let entity = NSEntityDescription.entity(forEntityName: "CoreDataCurrency", in: context)!
         self.init(entity: entity, insertInto: context)
         self.code = code

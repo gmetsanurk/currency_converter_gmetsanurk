@@ -5,7 +5,7 @@ protocol CustomizableCell {
     func setup(with: Any)
 }
 
-class SelectCurrencyCell: UICollectionViewCell, CustomizableCell {
+class SelectCurrencyCell: UICollectionViewCell, @preconcurrency CustomizableCell {
     private unowned var label: UILabel!
     
     override init(frame: CGRect) {

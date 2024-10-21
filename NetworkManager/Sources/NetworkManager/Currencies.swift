@@ -1,4 +1,4 @@
-public struct Currencies: Codable {
+public struct Currencies: Codable, Sendable {
     public let currencies: [String: String]
     public let success: Bool
 

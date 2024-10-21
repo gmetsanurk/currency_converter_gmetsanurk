@@ -41,43 +41,49 @@ class SelectCurrencyScreen: UIViewController {
             make.edges.equalToSuperview()
         }
 
-        guard let localDatabase = container.resolve(LocalDatabase.self) else {
-            return
-        }
-
-        if localDatabase.isEmptyCurrencies {
-            Task { [weak self] in
-                do {
-                    guard let self else {
-                        return
-                    }
-
-                    guard let manager = container.resolve(RemoteDataSource.self) else {
-                        return
-                    }
-                    let currencies = try await manager.getCurrencyData()
-
-                    let data = CurrenciesProxy(currencies: currencies)
-                    self.currenciesList.data = data.currencies.map {
-                        $0
-                    }
-                    // CoreDataManager.shared.logCoreDataDBPath()
-                    localDatabase.save(currencies: currencies)
-                } catch {
-
-                }
+        Task { [weak self] in
+            guard let localDatabase = await dependencies.resolve(LocalDatabase.self) else {
+                return
             }
-        } else {
-            localDatabase.loadCurrencies { [weak self] currencies in
-                self?.currenciesList.data = currencies.currencies.map {
-                    .init(code: $0.key, fullName: $0.value, context: CoreDataManager.shared.persistentContainer.viewContext)
-                }
+            let isEmptyCurrencies = await localDatabase.isEmptyCurrencies()
+            if isEmptyCurrencies {
+                    do {
+                        guard let self = self else {
+                            return
+                        }
+                        
+                        guard let manager = await dependencies.resolve(RemoteDataSource.self) else {
+                            return
+                        }
+                        let currencies = try await manager.getCurrencyData()
+                        
+                        let data = await CurrenciesProxy(currencies: currencies)
+                        self.currenciesList.data = data.currencies.map {
+                            $0
+                        }
+                        // CoreDataManager.shared.logCoreDataDBPath()
+                        try await localDatabase.save(currencies: currencies)
+                    } catch {
+                        print("Error: \(error)")
+                    }
+            } else {
+                    do {
+                        let currencies = try await localDatabase.loadCurrencies()
+                        self?.currenciesList.data = await currencies.currencies.asyncMap {
+                            await .init(
+                                code: $0.key,
+                                fullName: $0.value
+                            )
+                        }
+                    } catch {
+                        print("Error fetching or saving currencies: \(error)")
+                    }
             }
         }
     }
 }
 
-extension SelectCurrencyScreen: CollectionViewSelectDelegate {
+extension SelectCurrencyScreen: @preconcurrency CollectionViewSelectDelegate {
     func onSelected(data: Any) {
         #if USING_DELEGATES
         previousScreen?.onCurrencySelected(currency: data as? String ?? "")

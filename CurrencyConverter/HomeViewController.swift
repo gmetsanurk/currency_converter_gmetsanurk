@@ -164,7 +164,7 @@ extension HomeViewController {
             return
         }
 
-        Task { @MainActor [weak self] in
+        Task {[weak self] in
             guard let self else {
                 return
             }
@@ -187,7 +187,7 @@ extension HomeViewController {
     }
 }
 
-extension HomeViewController: SelectCurrencyScreenDelegate {
+extension HomeViewController: @preconcurrency SelectCurrencyScreenDelegate {
     func onCurrencySelected(currency: String) {
         selectedCurrencyLabel.text = currency
         print("cell text received \(currency)")

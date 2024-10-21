@@ -3,7 +3,7 @@ import UIKit
 import CoreData
 import NetworkManager
 
-class CoreDataManager {
+actor CoreDataManager {
     public static let shared = CoreDataManager()
 
     private init() { }
@@ -55,7 +55,7 @@ class CoreDataManager {
         }
     }
     
-    private func coreDataIsEmpty() -> Bool {
+    private func coreDataIsEmpty() async -> Bool {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "CoreDataCurrency")
         fetchRequest.fetchLimit = 1
         do {
@@ -69,38 +69,45 @@ class CoreDataManager {
 }
 
 extension CoreDataManager: LocalDatabase {
-    func save(currencies: Currencies) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-
-            currencies.currencies.forEach { code, fullName in
-                let currencyEntity = NSEntityDescription.insertNewObject(
-                    forEntityName: "CoreDataCurrency",
-                    into: self.context
-                )
-                currencyEntity.setValue(code, forKey: "code")
-                currencyEntity.setValue(fullName, forKey: "fullName")
+    
+    func save(currencies: Currencies) async throws {
+        let backgroundContext = self.context
+        
+        backgroundContext.perform  { [weak self] in
+            guard let self = self else {
+                return
             }
-            saveContext()
+        }
+        currencies.currencies.forEach { code, fullName in
+            let currencyEntity = NSEntityDescription.insertNewObject(
+                forEntityName: "CoreDataCurrency",
+                into: backgroundContext
+            )
+            currencyEntity.setValue(code, forKey: "code")
+            currencyEntity.setValue(fullName, forKey: "fullName")
+        }
+        do {
+            try backgroundContext.save()
+        } catch {
+            print("Saving context error")
+            backgroundContext.rollback()
         }
     }
     
-    func loadCurrencies(completion: @escaping (Currencies) -> Void) {
+    func loadCurrencies() async throws -> Currencies {
         let currencies = fetchCurrencies()
-
-        completion(
-            .init(
-                currencies: .init(
-                    uniqueKeysWithValues: Set(currencies).map {
-                        ($0.code ?? "", $0.fullName ?? "")
-                    }
-                ),
-                success: true
-            )
+        
+        return Currencies(
+            currencies: .init(
+                uniqueKeysWithValues: Set(currencies).map {
+                    ($0.code ?? "", $0.fullName ?? "")
+                }
+            ),
+            success: true
         )
     }
-
-    var isEmptyCurrencies: Bool {
-        coreDataIsEmpty()
+    
+    func isEmptyCurrencies() async -> Bool {
+        await coreDataIsEmpty()
     }
 }
