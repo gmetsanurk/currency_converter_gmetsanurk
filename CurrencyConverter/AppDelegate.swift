@@ -14,6 +14,7 @@ protocol LocalDatabase: Actor {
 
 protocol RemoteDataSource: Actor {
     func getCurrencyData() async throws -> Currencies
+    func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency
 }
 
 actor Dependencies {

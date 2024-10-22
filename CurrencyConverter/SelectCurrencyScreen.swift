@@ -83,7 +83,7 @@ class SelectCurrencyScreen: UIViewController {
     }
 }
 
-extension SelectCurrencyScreen: @preconcurrency CollectionViewSelectDelegate {
+extension SelectCurrencyScreen: CollectionViewSelectDelegate {
     func onSelected(data: Any) {
         #if USING_DELEGATES
         previousScreen?.onCurrencySelected(currency: data as? String ?? "")

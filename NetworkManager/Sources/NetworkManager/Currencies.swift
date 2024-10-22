@@ -9,19 +9,37 @@ public struct Currencies: Codable, Sendable {
 }
 
 public struct ConvertCurrency: Codable {
-    let info: Info
-    let query: Query
+    public let info: Info
+    public let query: Query
     public let result: Double
     public let success: Bool
 
-    struct Info: Codable {
+    public struct Info: Codable {
         let quote: Double
         let timestamp: Int
+        
+        public init(quote: Double, timestamp: Int) {
+            self.quote = quote
+            self.timestamp = timestamp
+        }
     }
 
-    struct Query: Codable {
+    public struct Query: Codable {
         let amount: Double
         let from: String
         let to: String
+        
+        public init(amount: Double, from: String, to: String) {
+            self.amount = amount
+            self.from = from
+            self.to = to
+        }
+    }
+    
+    public init(info: Info, query: Query, result: Double, success: Bool) {
+        self.info = info
+        self.query = query
+        self.result = result
+        self.success = success
     }
 }

@@ -170,7 +170,10 @@ extension HomeViewController {
             }
 
             do {
-                let result = try await network.convertCurrencyData(to: toCurrency, from: fromCurrency, amount: amount)
+                guard let remoteDataSource = await dependencies.resolve(RemoteDataSource.self) else {
+                    return
+                }
+                let result = try await remoteDataSource.convertCurrencyData(to: toCurrency, from: fromCurrency, amount: amount)
 
                 if result.success {
                     //print("Convert Summ: \(result.result)")
@@ -187,7 +190,7 @@ extension HomeViewController {
     }
 }
 
-extension HomeViewController: @preconcurrency SelectCurrencyScreenDelegate {
+extension HomeViewController: SelectCurrencyScreenDelegate {
     func onCurrencySelected(currency: String) {
         selectedCurrencyLabel.text = currency
         print("cell text received \(currency)")
