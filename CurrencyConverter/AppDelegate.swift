@@ -17,6 +17,8 @@ protocol RemoteDataSource: Actor {
     func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency
 }
 
+extension NetworkManager: RemoteDataSource { }
+
 actor Dependencies {
     let container = {
         let container = Container()
@@ -25,8 +27,8 @@ actor Dependencies {
             RealmLocalDatabase()
         }
         container.register(RemoteDataSource.self) { _ in
-            //NetworkManager()
-            LocalManager()
+            NetworkManager()
+            //LocalManager()
         }
         return container
     }()

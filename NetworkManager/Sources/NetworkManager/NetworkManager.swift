@@ -16,7 +16,7 @@ public actor NetworkManager {
 
     }
 
-    func getCurrencyData() async throws -> Currencies {
+    public func getCurrencyData() async throws -> Currencies {
         var urlComponents = URLComponents(string: "https://api.apilayer.com")!
         urlComponents.path = "/currency_data/list"
         
