@@ -2,6 +2,7 @@ import UIKit
 import Swinject
 import CoreData
 import NetworkManager
+import Combine
 
 //let homeScreen = HomeViewController()
 //let selectCurrenciesScreen = SelectCurrencyScreen()
@@ -19,6 +20,25 @@ protocol RemoteDataSource: Actor {
 
 extension NetworkManager: RemoteDataSource { }
 
+class MyMockSession: URLSessionProtocol {
+    public var mockData: Data?
+    public var mockResponse: HTTPURLResponse?
+    public var error: URLError?
+    
+    func dataTaskAnyPublisher(for request: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
+        if let error = error {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+        
+        let data = mockData ?? Data()
+        let response = mockResponse ?? HTTPURLResponse()
+        
+        return Just((data: data, response: response))
+            .setFailureType(to: URLError.self)
+            .eraseToAnyPublisher()
+    }
+}
+
 actor Dependencies {
     let container = {
         let container = Container()
@@ -27,7 +47,7 @@ actor Dependencies {
             RealmLocalDatabase()
         }
         container.register(RemoteDataSource.self) { _ in
-            NetworkManager()
+            NetworkManager.init(networkSession: MyMockSession())
             //LocalManager()
         }
         return container

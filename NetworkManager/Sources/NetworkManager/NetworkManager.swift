@@ -6,14 +6,26 @@ enum MyAppError: Error {
     case networkError(additionalError: Error)
 }
 
+public protocol URLSessionProtocol {
+    func dataTaskAnyPublisher(for request: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
+}
+
+extension URLSession: URLSessionProtocol {
+    public func dataTaskAnyPublisher(for request: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
+        dataTaskPublisher(for: request)
+            .eraseToAnyPublisher()
+    }
+}
+
 public actor NetworkManager {
 
     private var key: String = "VyF3jyMSwtoyS0GqlIV7c793tm4TJhvP"
     
     private var cancellables = Set<AnyCancellable>()
+    private var networkSession: URLSessionProtocol
 
-    public init() {
-
+    public init(networkSession: URLSessionProtocol = URLSession.shared) {
+        self.networkSession = networkSession
     }
 
     public func getCurrencyData() async throws -> Currencies {
@@ -31,7 +43,7 @@ public actor NetworkManager {
 
         return try await withCheckedThrowingContinuation { continuation in
             var publisher: AnyCancellable?
-            publisher = URLSession.shared.dataTaskPublisher(for: request)
+            publisher = networkSession.dataTaskAnyPublisher(for: request)
             .tryMap { element -> Data in
                 
                 guard let response = element.response as? HTTPURLResponse,
@@ -82,7 +94,7 @@ public actor NetworkManager {
 
         return try await withCheckedThrowingContinuation { continuation in
             var publisher: AnyCancellable?
-            publisher = URLSession.shared.dataTaskPublisher(for: request)
+            publisher = networkSession.dataTaskAnyPublisher(for: request)
             .tryMap { element -> Data in
                 guard let response = element.response as? HTTPURLResponse,
                       (200...299).contains(response.statusCode) else {

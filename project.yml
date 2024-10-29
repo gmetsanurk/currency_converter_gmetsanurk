@@ -19,19 +19,28 @@ packages:
 targets:
   CurrentConverterApp:
     settings:
-      base:
+        base:
         #SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_DELEGATES'
     type: application
     platform: iOS
     sources: [CurrencyConverter]
     info:
-      path: CurrencyConverter/Info.plist
+        path: CurrencyConverter/Info.plist
     dependencies:
-      - package: SnapKit
-      - package: RealmSwift
-      - package: Swinject
-      - package: NetworkManager
-      #- target: NetworkManager
+        - package: SnapKit
+        - package: RealmSwift
+        - package: Swinject
+        - package: NetworkManager
+        #- target: NetworkManager
+  CurrentConverterAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [CurrentConverterAppTests]
+    dependencies:
+        - target: CurrentConverterApp
+    info:
+        path: CurrentConverterAppTests/Info.plist
+    
 
 #  NetworkManager:
 #    type: framework
