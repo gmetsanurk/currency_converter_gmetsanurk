@@ -15,11 +15,17 @@ let package = Package(
             targets: ["NetworkManager"]),
     ],
     
-    dependencies: [],
+    dependencies: [
+            .package(url: "https://github.com/Moya/Moya", from: "15.0.0")
+    ],
+    
     targets: [
         .target(
             name: "NetworkManager",
-            dependencies: [])
+            dependencies: [
+                .product(name: "CombineMoya", package: "Moya")
+            ]
+        )
     ],
     swiftLanguageVersions: [.v5]
 )

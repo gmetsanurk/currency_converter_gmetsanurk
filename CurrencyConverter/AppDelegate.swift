@@ -47,7 +47,8 @@ actor Dependencies {
             RealmLocalDatabase()
         }
         container.register(RemoteDataSource.self) { _ in
-            NetworkManager.init(networkSession: MyMockSession())
+            NetworkManager()
+            //NetworkManager.init(networkSession: MyMockSession())
             //LocalManager()
         }
         return container

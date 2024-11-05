@@ -1,5 +1,7 @@
 import UIKit
+import Combine
 import SnapKit
+import NetworkManager
 
 protocol SelectCurrencyScreenDelegate: AnyObject {
     func onCurrencySelected(currency: String)
@@ -47,37 +49,38 @@ class SelectCurrencyScreen: UIViewController {
             }
             let isEmptyCurrencies = await localDatabase.isEmptyCurrencies()
             if isEmptyCurrencies {
-                    do {
-                        guard let self = self else {
-                            return
-                        }
-                        
-                        guard let manager = await dependencies.resolve(RemoteDataSource.self) else {
-                            return
-                        }
-                        let currencies = try await manager.getCurrencyData()
-                        
-                        let data = await CurrenciesProxy(currencies: currencies)
-                        self.currenciesList.data = data.currencies.map {
-                            $0
-                        }
-                        // CoreDataManager.shared.logCoreDataDBPath()
-                        try await localDatabase.save(currencies: currencies)
-                    } catch {
-                        print("Error: \(error)")
+                do {
+                    guard let self = self else {
+                        return
                     }
+                    
+                    guard let manager = await dependencies.resolve(RemoteDataSource.self) else {
+                        return
+                    }
+                    
+                    let currencies = try await manager.getCurrencyData()
+                    
+                    let data = await CurrenciesProxy(currencies: currencies)
+                    self.currenciesList.data = data.currencies.map {
+                        $0
+                    }
+                    // CoreDataManager.shared.logCoreDataDBPath()
+                    try await localDatabase.save(currencies: currencies)
+                } catch {
+                    print("Error: \(error)")
+                }
             } else {
-                    do {
-                        let currencies = try await localDatabase.loadCurrencies()
-                        self?.currenciesList.data = await currencies.currencies.asyncMap {
-                            await .init(
-                                code: $0.key,
-                                fullName: $0.value
-                            )
-                        }
-                    } catch {
-                        print("Error fetching or saving currencies: \(error)")
+                do {
+                    let currencies = try await localDatabase.loadCurrencies()
+                    self?.currenciesList.data = await currencies.currencies.asyncMap {
+                        await .init(
+                            code: $0.key,
+                            fullName: $0.value
+                        )
                     }
+                } catch {
+                    print("Error fetching or saving currencies: \(error)")
+                }
             }
         }
     }

@@ -21,6 +21,7 @@ targets:
     settings:
         base:
         #SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_DELEGATES'
+        SWIFT_VERSION: 6
     type: application
     platform: iOS
     sources: [CurrencyConverter]

@@ -1,9 +1,13 @@
 import Combine
+import Moya
 import Foundation
+import CombineMoya
 
-enum MyAppError: Error {
+public enum MyAppError: Error {
     case invalidUrl
     case networkError(additionalError: Error)
+    case decodingError(additionalError: Error)
+    case unknownError(additionalError: Error)
 }
 
 public protocol URLSessionProtocol {
@@ -18,108 +22,127 @@ extension URLSession: URLSessionProtocol {
 }
 
 public actor NetworkManager {
-
-    private var key: String = "VyF3jyMSwtoyS0GqlIV7c793tm4TJhvP"
+    
+    private static let key: String = "VyF3jyMSwtoyS0GqlIV7c793tm4TJhvP"
     
     private var cancellables = Set<AnyCancellable>()
     private var networkSession: URLSessionProtocol
-
+    
     public init(networkSession: URLSessionProtocol = URLSession.shared) {
         self.networkSession = networkSession
     }
-
+    
     public func getCurrencyData() async throws -> Currencies {
-        var urlComponents = URLComponents(string: "https://api.apilayer.com")!
-        urlComponents.path = "/currency_data/list"
-        
-        guard let url = urlComponents.url else {
-            print("Invalid URL")
-            throw MyAppError.invalidUrl
-        }
-        
-        var request = URLRequest(url: url, timeoutInterval: Double.infinity)
-        request.httpMethod = "GET"
-        request.addValue(key, forHTTPHeaderField: "apikey")
-
+        var token: AnyCancellable?
         return try await withCheckedThrowingContinuation { continuation in
-            var publisher: AnyCancellable?
-            publisher = networkSession.dataTaskAnyPublisher(for: request)
-            .tryMap { element -> Data in
-                
-                guard let response = element.response as? HTTPURLResponse,
-                      (200...299).contains(response.statusCode) else {
-                    throw URLError(.badServerResponse)
-                }
-                return element.data
-            }
-            .decode(type: Currencies.self, decoder: JSONDecoder())
-            .sink(
-                receiveCompletion: { status in
-                    switch status {
-                    case .finished:
-                        publisher = nil
-                        print("Request completed successfully")
-                    case .failure(let error):
-                        print("Request failed with error: \(error)")
-                        continuation.resume(throwing: MyAppError.networkError(additionalError: error))
+            let provider = MoyaProvider<CurrencyAPI>()
+            token = provider.requestPublisher(.list)
+                .tryMap { response in
+                    guard (200...299).contains(response.statusCode) else {
+                        continuation.resume(throwing: MyAppError.networkError(additionalError: URLError(.badServerResponse)))
+                        throw URLError(.badServerResponse)
                     }
-                },
-                receiveValue: { currencies in
-                    print("Data received: \(currencies)")
-                    continuation.resume(returning: currencies)
+                    return response.data
                 }
-            )
+                .decode(type: Currencies.self, decoder: JSONDecoder())
+                .mapError { error -> MyAppError in
+                    if let urlError = error as? URLError {
+                        return MyAppError.networkError(additionalError: urlError)
+                    } else if let decodingError = error as? DecodingError {
+                        return MyAppError.decodingError(additionalError: decodingError)
+                    } else {
+                        return MyAppError.unknownError(additionalError: error)
+                    }
+                }
+                .sink(receiveCompletion: {
+                    switch $0 {
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                        token = nil
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: {
+                    continuation.resume(returning: $0)
+                    token = nil
+                })
         }
     }
-
+    
     public func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency {
-        var urlComponents = URLComponents()
-        urlComponents.scheme = "https"
-        urlComponents.host = "api.apilayer.com"
-        urlComponents.path = "/currency_data/convert"
-        urlComponents.queryItems = [
-            URLQueryItem(name: "to", value: to),
-            URLQueryItem(name: "from", value: from),
-            URLQueryItem(name: "amount", value: String(amount))
-        ]
-        
-        guard let url = urlComponents.url else {
-            print("Invalid URL")
-            throw MyAppError.invalidUrl
-        }
-
-        var request = URLRequest(url: url, timeoutInterval: Double.infinity)
-        request.httpMethod = "GET"
-        await request.addValue(key, forHTTPHeaderField: "apikey")
-
+        var token: AnyCancellable?
         return try await withCheckedThrowingContinuation { continuation in
-            var publisher: AnyCancellable?
-            publisher = networkSession.dataTaskAnyPublisher(for: request)
-            .tryMap { element -> Data in
-                guard let response = element.response as? HTTPURLResponse,
-                      (200...299).contains(response.statusCode) else {
-                    throw URLError(.badServerResponse)
-                }
-                return element.data
-            }
-            .decode(type: ConvertCurrency.self, decoder: JSONDecoder())
-            .sink(
-                receiveCompletion: { status in
-                    switch status {
-                    case .finished:
-                        print("Request completed successfully")
-                        publisher = nil
-                    case .failure(let error):
-                        print("Request failed with error: \(error)")
-                        continuation.resume(throwing: MyAppError.networkError(additionalError: error))
+            let provider = MoyaProvider<CurrencyAPI>()
+            token = provider.requestPublisher(.convert(to: to, from: from, amount: amount))
+                .tryMap { response in
+                    guard (200...299).contains(response.statusCode) else {
+                        continuation.resume(throwing: MyAppError.networkError(additionalError: URLError(.badServerResponse)))
+                        throw URLError(.badServerResponse)
                     }
-                },
-                receiveValue: { convertedCurrency in
-                    print("Data received: \(convertedCurrency)")
-                    continuation.resume(returning: convertedCurrency)
+                    return response.data
                 }
-            )
+                .decode(type: ConvertCurrency.self, decoder: JSONDecoder())
+                .mapError { error -> MyAppError in
+                    if let urlError = error as? URLError {
+                        return MyAppError.networkError(additionalError: urlError)
+                    } else if let decodingError = error as? DecodingError {
+                        return MyAppError.decodingError(additionalError: decodingError)
+                    } else {
+                        return MyAppError.unknownError(additionalError: error)
+                    }
+                }
+                .sink(receiveCompletion: {
+                    switch $0 {
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                        token = nil
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { (convertedCurrency: ConvertCurrency) in
+                    continuation.resume(returning: convertedCurrency)
+                    token = nil
+                })
         }
     }
+}
 
+extension NetworkManager {
+    enum CurrencyAPI: TargetType {
+        case list
+        case convert(to: String, from: String, amount: Int)
+        
+        var baseURL: URL {
+            return URL(string: "https://api.apilayer.com")!
+        }
+        var path: String {
+            switch self {
+            case .list:
+                return "/currency_data/list"
+            case .convert:
+                return "/currency_data/convert"
+            }
+        }
+        var method: Moya.Method {
+            return .get
+        }
+        var task: Task {
+            switch self {
+            case .list:
+                return .requestPlain
+            case .convert(let to, let from, let amount):
+                return .requestParameters(parameters: [
+                    "to": to,
+                    "from": from,
+                    "amount": amount
+                ], encoding: URLEncoding.default)
+            }
+        }
+        var headers: [String: String]? {
+            return ["apikey": key]
+        }
+        var validationType: ValidationType {
+            return .successCodes
+        }
+    }
 }
