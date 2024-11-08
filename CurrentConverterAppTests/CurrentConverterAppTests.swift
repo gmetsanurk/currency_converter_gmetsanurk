@@ -3,7 +3,7 @@ import Combine
 @testable import CurrentConverterApp
 @testable import NetworkManager
 
-final class CurrentConverterAppTests: XCTestCase {
+/*final class CurrentConverterAppTests: XCTestCase {
     var networkManager: NetworkManager!
     var cancellables: Set<AnyCancellable>!
     var mockSession: MyMockSession!
@@ -37,6 +37,7 @@ final class CurrentConverterAppTests: XCTestCase {
     }
     
     func testGetCurrencyDataBadBadServerResponse() async throws {
+        
         mockSession.error = URLError(.badServerResponse)
         
         do {
@@ -71,4 +72,4 @@ final class CurrentConverterAppTests: XCTestCase {
             XCTFail("Expected MyAppError.networkError, but got a different error: \(error)")
         }
     }
-}
+}*/

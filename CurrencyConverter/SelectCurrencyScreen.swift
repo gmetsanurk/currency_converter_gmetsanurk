@@ -96,3 +96,9 @@ extension SelectCurrencyScreen: CollectionViewSelectDelegate {
         #endif
     }
 }
+
+extension SelectCurrencyScreen: AnyScreen {
+    func present(screen: any AnyScreen) {
+        
+    }
+}

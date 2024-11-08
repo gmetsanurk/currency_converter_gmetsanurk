@@ -3,8 +3,8 @@ import UIKit
 import SnapKit
 import NetworkManager
 
-class HomeViewController: UIViewController {
-    private var selectedCurrencyLabel = UILabel()
+class HomeView: UIViewController {
+    var selectedCurrencyLabel = UILabel()
     private var currencyAmountTextField = UITextField()
     var convertToButtonSelected: String?
     var convertFromButtonSelected: String?
@@ -13,6 +13,8 @@ class HomeViewController: UIViewController {
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
 
     private let network = NetworkManager()
+
+    private lazy var presenter = HomePresenter(view: self)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,12 +29,7 @@ class HomeViewController: UIViewController {
         })
 #else
         let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
-            let selectCurrenciesScreen = SelectCurrencyScreen()
-            selectCurrenciesScreen.onCurrencySelected = { [weak self] currency in
-                self?.selectedCurrencyLabel.text = currency?.fullName
-                print("cell text received \(String(describing: currency))")
-            }
-            self.present(selectCurrenciesScreen, animated: true)
+            self.presenter.handleSelectSourceCurrency()
         })
 #endif
         
@@ -55,7 +52,7 @@ class HomeViewController: UIViewController {
         }
         
         
-        let convertFromButton = createCurrencyButton(title: NSLocalizedString("home_view.from", comment: "From button"))
+        let convertFromButton = self.createCurrencyButton(title: NSLocalizedString("home_view.from", comment: "From button"))
         convertFromButton.tag = 1
         view.addSubview(convertFromButton)
         
@@ -67,7 +64,7 @@ class HomeViewController: UIViewController {
         }
         
         
-        let convertToButton = createCurrencyButton(title: NSLocalizedString("home_view.to", comment: "To button"))
+        let convertToButton = self.createCurrencyButton(title: NSLocalizedString("home_view.to", comment: "To button"))
         convertToButton.tag = 2
         view.addSubview(convertToButton)
         
@@ -87,7 +84,11 @@ class HomeViewController: UIViewController {
         doConvertActionButton.setTitle(NSLocalizedString("home_view.convert", comment: "Convert button"), for: .normal)
         doConvertActionButton.addAction(UIAction { [unowned self] _ in
             //print("button pressed")
-            self.convertCurrency()
+            print("check before .convertCurrency call: \(currencyAmountTextField.text) + \(convertFromButtonSelected) + \(convertToButtonSelected)")
+            guard let amountTextString = currencyAmountTextField.text else {
+                return
+            }
+            self.presenter.convertCurrency(amountText: amountTextString, fromCurrency: convertFromButtonSelected, toCurrency: convertToButtonSelected)
         }, for: .touchUpInside)
         view.addSubview(doConvertActionButton)
         
@@ -114,6 +115,10 @@ class HomeViewController: UIViewController {
             }
     }
 
+    func currencySelected(currency: CurrencyType?) {
+        selectedCurrencyLabel.text = currency?.fullName
+    }
+
     /*override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -127,77 +132,27 @@ class HomeViewController: UIViewController {
     }*/
 }
 
-extension HomeViewController {
-    func createCurrencyButton(title: String) -> UIButton {
-        let button = UIButton()
-        
-        button.addAction(UIAction { [unowned self, weak button] _ in
-            let selectCurrenciesScreen = SelectCurrencyScreen()
-            selectCurrenciesScreen.onCurrencySelected = { [unowned self, weak button] currency in
-                button?.setTitle(currency?.code, for: .normal)
-                print("Currency selected: \(String(describing: currency?.fullName))")
-                let selectedCurrency = String(currency?.code ?? "")
-                switch button?.tag {
-                case 1:
-                    self.convertFromButtonSelected = selectedCurrency
-                case 2:
-                    self.convertToButtonSelected = selectedCurrency
-                default:
-                    return
-                }
-            }
-            self.present(selectCurrenciesScreen, animated: true)
-        }, for: .touchUpInside)
-        
-        button.setTitle(title, for: .normal)
-        button.backgroundColor = .systemBlue
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 10
-        return button
-    }
-    
-    func convertCurrency() {
-        guard let amountText = currencyAmountTextField.text, let amount = Int(amountText),
-              let fromCurrency = convertFromButtonSelected, !fromCurrency.isEmpty,
-              let toCurrency = convertToButtonSelected, !toCurrency.isEmpty else {
-            print("Fill all the blanks")
-            return
-        }
-
-        Task {[weak self] in
-            guard let self else {
-                return
-            }
-
-            do {
-                guard let remoteDataSource = await dependencies.resolve(RemoteDataSource.self) else {
-                    return
-                }
-                let result = try await remoteDataSource.convertCurrencyData(to: toCurrency, from: fromCurrency, amount: amount)
-
-                if result.success {
-                    //print("Convert Summ: \(result.result)")
-                    DispatchQueue.main.async { [weak self] in
-                        self?.selectedCurrencyLabel.text = "\(NSLocalizedString("home_view.result", comment: "Convertation result")): \(result.result)"
-                    }
-                } else {
-                    print("Cannot complete convertation")
-                }
-            } catch {
-
-            }
-        }
-    }
-}
-
-extension HomeViewController: SelectCurrencyScreenDelegate {
+extension HomeView: SelectCurrencyScreenDelegate {
     func onCurrencySelected(currency: String) {
         selectedCurrencyLabel.text = currency
         print("cell text received \(currency)")
     }
+    
+    public func updateFromToButtons(button: UIButton, selectedCurrency: String) {
+        switch button.tag {
+        case 1:
+            self.convertFromButtonSelected = selectedCurrency
+            print("\(convertFromButtonSelected) and \(selectedCurrency)")
+        case 2:
+            self.convertToButtonSelected = selectedCurrency
+            print("\(convertToButtonSelected) and \(selectedCurrency)")
+        default:
+            return
+        }
+    }
 }
 
-extension HomeViewController: UITextFieldDelegate {
+extension HomeView: UITextFieldDelegate {
     func addTextField() {
         
         currencyAmountTextField.borderStyle = .roundedRect
@@ -234,5 +189,44 @@ extension HomeViewController: UITextFieldDelegate {
         let allowedCharacters = CharacterSet.decimalDigits
         let characterSet = CharacterSet(charactersIn: string)
         return allowedCharacters.isSuperset(of: characterSet)
+    }
+}
+
+extension HomeView {
+    func createCurrencyButton(title: String) -> UIButton {
+        let button = UIButton()
+        
+        button.addAction(UIAction { [weak self, weak button] _ in
+            let selectCurrencyScreen = SelectCurrencyScreen()
+            selectCurrencyScreen.onCurrencySelected = { [weak button] currency in
+                if let unwrappedButton = button {
+                    unwrappedButton.setTitle(currency?.code, for: .normal)
+                    print("Currency selected: \(String(describing: currency?.fullName))")
+                    
+                    let selectedCurrency = String(currency?.code ?? "")
+                    self?.updateFromToButtons(button: unwrappedButton, selectedCurrency: selectedCurrency)
+                }
+            }
+            self?.present(screen: selectCurrencyScreen)
+        }, for: .touchUpInside)
+        
+        button.setTitle(title, for: .normal)
+        button.backgroundColor = .systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        return button
+    }
+}
+extension HomeView: AnyHomeView {
+    func present(screen: AnyScreen) {
+        if let screenController = screen as? (UIViewController & AnyScreen) {
+            self.presentController(screen: screenController)
+        }
+    }
+
+    func conversionCompleted(result: String) {
+        DispatchQueue.main.async { [weak self] in
+            self?.selectedCurrencyLabel.text = result
+        }
     }
 }
