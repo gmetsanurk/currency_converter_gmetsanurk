@@ -12,7 +12,7 @@ class HomeView: UIViewController {
     private var keyboardWillShowNotificationCancellable: AnyCancellable?
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
 
-    private let network = NetworkManager()
+    private lazy var network = NetworkManager()
 
     private lazy var presenter = HomePresenter(view: self)
 
@@ -229,4 +229,8 @@ extension HomeView: AnyHomeView {
             self?.selectedCurrencyLabel.text = result
         }
     }
+}
+
+extension HomeView: URLSessionDelegate, URLSessionTaskDelegate {
+
 }

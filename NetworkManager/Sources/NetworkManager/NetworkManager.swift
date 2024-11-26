@@ -1,3 +1,4 @@
+import Alamofire
 import Combine
 import Moya
 import Foundation
@@ -10,32 +11,26 @@ public enum MyAppError: Error {
     case unknownError(additionalError: Error)
 }
 
-public protocol URLSessionProtocol {
-    func dataTaskAnyPublisher(for request: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError>
-}
-
-extension URLSession: URLSessionProtocol {
-    public func dataTaskAnyPublisher(for request: URLRequest) -> AnyPublisher<(data: Data, response: URLResponse), URLError> {
-        dataTaskPublisher(for: request)
-            .eraseToAnyPublisher()
-    }
-}
-
 public actor NetworkManager {
-    
     private static let key: String = "VyF3jyMSwtoyS0GqlIV7c793tm4TJhvP"
     
     private var cancellables = Set<AnyCancellable>()
-    private var networkSession: URLSessionProtocol
-    
-    public init(networkSession: URLSessionProtocol = URLSession.shared) {
-        self.networkSession = networkSession
+    let session: Session
+
+    public init(configuration: URLSessionConfiguration = URLSessionConfiguration.af.default) {
+        let rootQueue = DispatchQueue(label: "org.alamofire.customQueue")
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        queue.underlyingQueue = rootQueue
+        let delegate = SessionDelegate()
+        let urlSession = URLSession(configuration: configuration, delegate: delegate, delegateQueue: queue)
+        session = .init(session: urlSession, delegate: delegate, rootQueue: rootQueue)
     }
-    
+
     public func getCurrencyData() async throws -> Currencies {
         var token: AnyCancellable?
         return try await withCheckedThrowingContinuation { continuation in
-            let provider = MoyaProvider<CurrencyAPI>()
+            let provider = MoyaProvider<CurrencyAPI>(session: session)
             token = provider.requestPublisher(.list)
                 .tryMap { response in
                     guard (200...299).contains(response.statusCode) else {
@@ -72,7 +67,7 @@ public actor NetworkManager {
     public func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency {
         var token: AnyCancellable?
         return try await withCheckedThrowingContinuation { continuation in
-            let provider = MoyaProvider<CurrencyAPI>()
+            let provider = MoyaProvider<CurrencyAPI>(session: session)
             token = provider.requestPublisher(.convert(to: to, from: from, amount: amount))
                 .tryMap { response in
                     guard (200...299).contains(response.statusCode) else {

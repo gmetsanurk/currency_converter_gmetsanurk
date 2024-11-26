@@ -1,18 +1,21 @@
 import XCTest
 import Combine
+import Mocker
+import Moya
 @testable import CurrentConverterApp
 @testable import NetworkManager
 
-/*final class CurrentConverterAppTests: XCTestCase {
-    var networkManager: NetworkManager!
+final class CurrentConverterAppTests: XCTestCase {
+    var networkManager: RemoteDataSource!
     var cancellables: Set<AnyCancellable>!
-    var mockSession: MyMockSession!
-    
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         cancellables = []
-        mockSession = MyMockSession()
-        networkManager = NetworkManager(networkSession: mockSession)
+        
+        let configuration = URLSessionConfiguration.af.default
+        configuration.protocolClasses = [MockingURLProtocol.self]
+        networkManager = NetworkManager(configuration:  configuration)
     }
     
     override func tearDownWithError() throws {
@@ -22,54 +25,87 @@ import Combine
     }
     
     func testGetCurrencyDataSuccess() async throws {
-        mockSession.mockData = """
+        let url = URL(string: "https://api.apilayer.com/currency_data/list")!
+        
+        let mockData = """
             {
                 "currencies": {
                     "USD": "United States Dollar",
                     "EUR": "Euro"
                 },
-            "success": true
+                "success": true
             }
-            """.data(using: .utf8)
+        """.data(using: .utf8)
         
-        let result = try await networkManager.getCurrencyData()
-        XCTAssertEqual(result.currencies["USD"], "United States Dollar")
-    }
-    
-    func testGetCurrencyDataBadBadServerResponse() async throws {
-        
-        mockSession.error = URLError(.badServerResponse)
+        let mock = Mock(url: url, contentType: .json, statusCode: 200, data: [
+            .get : mockData!
+        ])
+        mock.register()
         
         do {
-            _ = try await networkManager.getCurrencyData()
-            XCTFail("Expected URLError with .badServerResponse, but no error was thrown")
-        } catch let error as MyAppError {
-            switch error {
-            case .networkError(let additionalError as URLError):
-                XCTAssertEqual(additionalError.code, .badServerResponse)
-            default:
-                XCTFail("Expected MyAppError.networkError, but got a different MyAppError: \(error)")
-            }
+            let currencies = try await networkManager.getCurrencyData()
+            XCTAssertEqual(currencies.currencies["USD"], "United States Dollar")
+            XCTAssertEqual(currencies.currencies["EUR"], "Euro")
         } catch {
-            XCTFail("Expected MyAppError.networkError, but got a different error: \(error)")
+            XCTFail("Unexpected error: \(error)")
         }
     }
     
-    func testGetCurrencyDataBadURL() async throws {
-        mockSession.error = URLError(.badURL)
+    func testConvertCurrencyData() async throws {
+        let url = URL(string: "https://api.apilayer.com/currency_data/convert?amount=5&from=EUR&to=RUB")!
+        
+        let mockData = """
+            {
+              "info": {
+                "quote": 111.087821,
+                "timestamp": 1732627444
+              },
+              "query": {
+                "amount": 5,
+                "from": "EUR",
+                "to": "RUB"
+              },
+              "result": 123.456789,
+              "success": true
+            }
+        """.data(using: .utf8)
+        
+        let mock = Mock(url: url, contentType: .json, statusCode: 200, data: [
+            .get : mockData!
+        ])
+        mock.register()
         
         do {
-            _ = try await networkManager.getCurrencyData()
-            XCTFail("Expected URLError with .badServerResponse, but no error was thrown")
-        } catch let error as MyAppError {
-            switch error {
-            case .networkError(let additionalError as URLError):
-                XCTAssertEqual(additionalError.code, .badURL)
-            default:
-                XCTFail("Expected MyAppError.networkError, but got a different MyAppError: \(error)")
-            }
+            let convert = try await networkManager.convertCurrencyData(to: "RUB", from: "EUR", amount: 5)
+            XCTAssertEqual(convert.result, 123.456789)
         } catch {
-            XCTFail("Expected MyAppError.networkError, but got a different error: \(error)")
+            XCTFail("Unexpected error: \(error)")
+            print(String(data: mockData!, encoding: .utf8) ?? "Invalid Data")
         }
     }
-}*/
+
+    func testMoyaErrorUnderlying() async {
+        
+        let customError = MyAppError.networkError(additionalError: NSError(domain: "Test", code: 123, userInfo: nil))
+        let moyaError: MoyaError = .underlying(customError, nil)
+        
+        if case .underlying(let underlyingError, _) = moyaError {
+            if let myAppError = underlyingError as? MyAppError {
+                switch myAppError {
+                case .networkError(let additionalError):
+                    if let nsError = additionalError as? NSError {
+                        XCTAssertEqual(nsError.code, 123, "Unexpected error code")
+                    } else {
+                        XCTFail("Expected NSError, but got: \(additionalError)")
+                    }
+                default:
+                    XCTFail("Expected networkError case, but got: \(myAppError)")
+                }
+            } else {
+                XCTFail("Expected MyAppError, but got: \(underlyingError)")
+            }
+        } else {
+            XCTFail("Expected MoyaError.underlying, but got: \(moyaError)")
+        }
+    }
+}

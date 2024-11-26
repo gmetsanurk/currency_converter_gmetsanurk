@@ -2,14 +2,25 @@ import NetworkManager
 import Combine
 
 actor LocalManager: RemoteDataSource {
-    
+    private var error: Error?
+
+    func set(error: Error?) {
+        self.error = error
+    }
+
     private let someCurrencies = Currencies(currencies: ["EUR": "Euro", "USD": "United States Dollar", "GBP": "British Pound Sterling", "CNH": "Chinese Yuan Offshore", "RUB": "Russian Ruble", "KZT": "Kazakhstani Tenge", "KGS": "Kyrgystani Som"], success: true)
     
     func getCurrencyData() async throws -> Currencies {
+        if let error {
+            throw error
+        }
         return someCurrencies
     }
 
     func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency {
+        if let error {
+            throw error
+        }
         switch (from, to) {
         case ("EUR", "RUB"):
             return generateSomeConvertCurrencyExample(amount: amount, multiplier: 100)
