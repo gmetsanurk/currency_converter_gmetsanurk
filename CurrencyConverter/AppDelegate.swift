@@ -56,7 +56,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupWindow() {
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = HomeView()
-        window?.makeKeyAndVisible()
+        dependencies.container.register(Coordinator.self) { [weak self] _ in
+            UIKitCoordinator(window: self?.window ?? .init())
+        }
+        dependencies.resolve(Coordinator.self)?.openHomeScreen()
     }
 }

@@ -24,14 +24,13 @@ class HomePresenter {
     init(view: AnyHomeView) {
         self.view = view
     }
-    
-    func handleSelectSourceCurrency() {
-        let selectCurrenciesScreen = SelectCurrencyScreen()
-        selectCurrenciesScreen.onCurrencySelected = { [weak self] currency in
+
+    @MainActor
+    func handleSelectSourceCurrency() async {
+        await dependencies.resolve(Coordinator.self)?.openCurrenciesSelection(onCurrencySelected: { [weak self] currency in
             self?.view.currencySelected(currency: currency)
             print("cell text received \(String(describing: currency))")
-        }
-        view.present(screen: selectCurrenciesScreen)
+        })
     }
     
     func convertCurrency(amountText: String, fromCurrency: String?, toCurrency: String?) {

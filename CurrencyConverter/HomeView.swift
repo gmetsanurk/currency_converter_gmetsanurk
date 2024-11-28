@@ -29,7 +29,9 @@ class HomeView: UIViewController {
         })
 #else
         let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
-            self.presenter.handleSelectSourceCurrency()
+            Task { [weak self] in
+                await self?.presenter.handleSelectSourceCurrency()
+            }
         })
 #endif
         
