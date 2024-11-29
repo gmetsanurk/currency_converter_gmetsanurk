@@ -1,8 +1,8 @@
 import Alamofire
 import Combine
-import Moya
-import Foundation
 import CombineMoya
+import Foundation
+import Moya
 
 public enum MyAppError: Error {
     case invalidUrl
@@ -13,7 +13,7 @@ public enum MyAppError: Error {
 
 public actor NetworkManager {
     private static let key: String = "VyF3jyMSwtoyS0GqlIV7c793tm4TJhvP"
-    
+
     private var cancellables = Set<AnyCancellable>()
     let session: Session
 
@@ -33,7 +33,7 @@ public actor NetworkManager {
             let provider = MoyaProvider<CurrencyAPI>(session: session)
             token = provider.requestPublisher(.list)
                 .tryMap { response in
-                    guard (200...299).contains(response.statusCode) else {
+                    guard (200 ... 299).contains(response.statusCode) else {
                         continuation.resume(throwing: MyAppError.networkError(additionalError: URLError(.badServerResponse)))
                         throw URLError(.badServerResponse)
                     }
@@ -51,7 +51,7 @@ public actor NetworkManager {
                 }
                 .sink(receiveCompletion: {
                     switch $0 {
-                    case .failure(let error):
+                    case let .failure(error):
                         continuation.resume(throwing: error)
                         token = nil
                     case .finished:
@@ -63,14 +63,14 @@ public actor NetworkManager {
                 })
         }
     }
-    
+
     public func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency {
         var token: AnyCancellable?
         return try await withCheckedThrowingContinuation { continuation in
             let provider = MoyaProvider<CurrencyAPI>(session: session)
             token = provider.requestPublisher(.convert(to: to, from: from, amount: amount))
                 .tryMap { response in
-                    guard (200...299).contains(response.statusCode) else {
+                    guard (200 ... 299).contains(response.statusCode) else {
                         continuation.resume(throwing: MyAppError.networkError(additionalError: URLError(.badServerResponse)))
                         throw URLError(.badServerResponse)
                     }
@@ -88,7 +88,7 @@ public actor NetworkManager {
                 }
                 .sink(receiveCompletion: {
                     switch $0 {
-                    case .failure(let error):
+                    case let .failure(error):
                         continuation.resume(throwing: error)
                         token = nil
                     case .finished:
@@ -106,38 +106,43 @@ extension NetworkManager {
     enum CurrencyAPI: TargetType {
         case list
         case convert(to: String, from: String, amount: Int)
-        
+
         var baseURL: URL {
-            return URL(string: "https://api.apilayer.com")!
+            URL(string: "https://api.apilayer.com")!
         }
+
         var path: String {
             switch self {
             case .list:
-                return "/currency_data/list"
+                "/currency_data/list"
             case .convert:
-                return "/currency_data/convert"
+                "/currency_data/convert"
             }
         }
+
         var method: Moya.Method {
-            return .get
+            .get
         }
+
         var task: Task {
             switch self {
             case .list:
-                return .requestPlain
-            case .convert(let to, let from, let amount):
-                return .requestParameters(parameters: [
+                .requestPlain
+            case let .convert(to, from, amount):
+                .requestParameters(parameters: [
                     "to": to,
                     "from": from,
-                    "amount": amount
+                    "amount": amount,
                 ], encoding: URLEncoding.default)
             }
         }
+
         var headers: [String: String]? {
-            return ["apikey": key]
+            ["apikey": key]
         }
+
         var validationType: ValidationType {
-            return .successCodes
+            .successCodes
         }
     }
 }

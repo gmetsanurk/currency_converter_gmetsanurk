@@ -1,11 +1,11 @@
-import UIKit
-import Swinject
+import Combine
 import CoreData
 import NetworkManager
-import Combine
+import Swinject
+import UIKit
 
-//let homeScreen = HomeViewController()
-//let selectCurrenciesScreen = SelectCurrencyScreen()
+// let homeScreen = HomeViewController()
+// let selectCurrenciesScreen = SelectCurrencyScreen()
 
 protocol LocalDatabase: Actor {
     func save(currencies: Currencies) async throws
@@ -18,7 +18,7 @@ protocol RemoteDataSource: Actor {
     func convertCurrencyData(to: String, from: String, amount: Int) async throws -> ConvertCurrency
 }
 
-extension NetworkManager: RemoteDataSource { }
+extension NetworkManager: RemoteDataSource {}
 
 actor Dependencies {
     let container = {
@@ -29,7 +29,7 @@ actor Dependencies {
         }
         container.register(RemoteDataSource.self) { _ in
             // NetworkManager()
-            //NetworkManager.init(networkSession: MyMockSession())
+            // NetworkManager.init(networkSession: MyMockSession())
             LocalManager()
         }
         return container

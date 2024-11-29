@@ -1,13 +1,13 @@
-import Dispatch
-import RealmSwift
 import CoreData
-import UIKit
+import Dispatch
 import NetworkManager
+import RealmSwift
+import UIKit
 
 class RealmCurrency: Object {
     @Persisted var code: String
     @Persisted var fullName: String
-    
+
     convenience init(code: String, fullName: String) {
         self.init()
         self.code = code
@@ -17,30 +17,26 @@ class RealmCurrency: Object {
 
 class CurrenciesProxy {
     let currencies: [CoreDataCurrency]
-    
+
     init(currencies: Currencies) async {
         self.currencies = await currencies.currencies.asyncMap {
             await .init(code: $0.key, fullName: $0.value)
         }
     }
-    
 }
 
 @objc(CoreDataCurrency)
-public class CoreDataCurrency: NSManagedObject {
+public class CoreDataCurrency: NSManagedObject {}
 
-}
-
-extension CoreDataCurrency {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<CoreDataCurrency> {
-        return NSFetchRequest<CoreDataCurrency>(entityName: "CoreDataCurrency")
+public extension CoreDataCurrency {
+    @nonobjc class func fetchRequest() -> NSFetchRequest<CoreDataCurrency> {
+        NSFetchRequest<CoreDataCurrency>(entityName: "CoreDataCurrency")
     }
 
-    @NSManaged public var code: String?
-    @NSManaged public var fullName: String?
-    
-    convenience init(code: String, fullName: String) async {
+    @NSManaged var code: String?
+    @NSManaged var fullName: String?
+
+    internal convenience init(code: String, fullName: String) async {
         let context = await CoreDataManager.shared.persistentContainer.viewContext
         let entity = NSEntityDescription.entity(forEntityName: "CoreDataCurrency", in: context)!
         self.init(entity: entity, insertInto: context)
@@ -49,6 +45,4 @@ extension CoreDataCurrency {
     }
 }
 
-extension CoreDataCurrency : Identifiable {
-
-}
+extension CoreDataCurrency: Identifiable {}

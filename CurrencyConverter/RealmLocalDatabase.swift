@@ -1,10 +1,8 @@
 import Dispatch
-import RealmSwift
 import NetworkManager
+import RealmSwift
 
-actor RealmLocalDatabase {
-
-}
+actor RealmLocalDatabase {}
 
 extension RealmLocalDatabase: LocalDatabase {
     func save(currencies: Currencies) async throws {
@@ -22,20 +20,20 @@ extension RealmLocalDatabase: LocalDatabase {
             }
         }
     }
-    
+
     func loadCurrencies() async throws -> Currencies {
         try await withCheckedThrowingContinuation { continuation in
             do {
                 let realm = try Realm()
                 let resultsArray: Results<RealmCurrency> = realm.objects(RealmCurrency.self)
-                
+
                 let currencies = Currencies(
                     currencies: .init(resultsArray.map {
                         ($0.code, $0.fullName)
                     }, uniquingKeysWith: { first, _ in first }),
                     success: true
                 )
-                continuation.resume(returning: (currencies))
+                continuation.resume(returning: currencies)
             } catch {
                 continuation.resume(throwing: error)
             }
@@ -43,8 +41,8 @@ extension RealmLocalDatabase: LocalDatabase {
     }
 
     func isEmptyCurrencies() async -> Bool {
-        return await Task { @MainActor in
-            (try? await Realm().isEmpty) ?? true
+        await Task { @MainActor in
+            await (try? Realm().isEmpty) ?? true
         }.value
     }
 }

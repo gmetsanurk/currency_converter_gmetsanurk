@@ -1,5 +1,5 @@
-import NetworkManager
 import Combine
+import NetworkManager
 
 actor LocalManager: RemoteDataSource {
     private var error: Error?
@@ -9,9 +9,9 @@ actor LocalManager: RemoteDataSource {
     }
 
     private let someCurrencies = Currencies(currencies: [
-        "EUR": "Euro", "USD": "United States Dollar", "GBP": "British Pound Sterling", "CNH": "Chinese Yuan Offshore", "RUB": "Russian Ruble", "KZT": "Kazakhstani Tenge", "KGS": "Kyrgystani Som"
+        "EUR": "Euro", "USD": "United States Dollar", "GBP": "British Pound Sterling", "CNH": "Chinese Yuan Offshore", "RUB": "Russian Ruble", "KZT": "Kazakhstani Tenge", "KGS": "Kyrgystani Som",
     ], success: true)
-    
+
     func getCurrencyData() async throws -> Currencies {
         if let error {
             throw error
@@ -32,13 +32,13 @@ actor LocalManager: RemoteDataSource {
             return generateSomeConvertCurrencyExample(amount: amount, multiplier: 1)
         }
     }
-    
+
     func generateSomeConvertCurrencyExample(amount: Int, multiplier: Double) -> ConvertCurrency {
-        let info = ConvertCurrency.Info(quote: 0.76953, timestamp: 1729523705)
+        let info = ConvertCurrency.Info(quote: 0.76953, timestamp: 1_729_523_705)
         let query = ConvertCurrency.Query(amount: 5, from: "FROM", to: "TO")
-        
-        let result: Double = Double(amount) * multiplier
-        
+
+        let result = Double(amount) * multiplier
+
         return ConvertCurrency(info: info, query: query, result: result, success: true)
     }
 }

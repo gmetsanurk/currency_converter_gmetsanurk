@@ -1,5 +1,5 @@
-import UIKit
 import SnapKit
+import UIKit
 
 protocol CustomizableCell {
     func setup(with: Any)
@@ -7,20 +7,20 @@ protocol CustomizableCell {
 
 class SelectCurrencyCell: UICollectionViewCell, CustomizableCell {
     private unowned var label: UILabel!
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        self.backgroundColor = .blue
+        backgroundColor = .blue
         let someLabel = UILabel()
         contentView.addSubview(someLabel)
         someLabel.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        self.label = someLabel
+        label = someLabel
     }
-    
-    required init?(coder: NSCoder) {
+
+    required init?(coder _: NSCoder) {
         nil
     }
 

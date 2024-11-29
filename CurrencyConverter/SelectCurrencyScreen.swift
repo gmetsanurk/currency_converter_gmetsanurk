@@ -1,21 +1,21 @@
-import UIKit
 import Combine
-import SnapKit
 import NetworkManager
+import SnapKit
+import UIKit
 
 protocol SelectCurrencyScreenDelegate: AnyObject {
     func onCurrencySelected(currency: String)
 }
 
-//typealias CurrencyType = RealmCurrency
+// typealias CurrencyType = RealmCurrency
 typealias CurrencyType = CoreDataCurrency
 typealias SelectCurrencyScreenHandler = (CurrencyType?) -> Void
 
 class SelectCurrencyScreen: UIViewController, AnySelectView {
     #if USING_DELEGATES
-    weak var previousScreen: SelectCurrencyScreenDelegate?
+        weak var previousScreen: SelectCurrencyScreenDelegate?
     #else
-    var onCurrencySelected: SelectCurrencyScreenHandler?
+        var onCurrencySelected: SelectCurrencyScreenHandler?
     #endif
 
     private unowned var currenciesList: CollectionView<SelectCurrencyCell, CurrencyType>!
@@ -27,14 +27,14 @@ class SelectCurrencyScreen: UIViewController, AnySelectView {
         view.backgroundColor = .red
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = .init(width: 100, height: 100)
-        
+
         #if USING_DELEGATES
-        let currenciesList = CollectionView<SelectCurrencyCell, String>(frame: .zero, collectionViewLayout: layout, selectDelegate: self)
+            let currenciesList = CollectionView<SelectCurrencyCell, String>(frame: .zero, collectionViewLayout: layout, selectDelegate: self)
         #else
-        let currenciesList = CollectionView<SelectCurrencyCell, CurrencyType>(frame: .zero, collectionViewLayout: layout, handler: { [unowned self] currency in
-            self.onCurrencySelected?(currency as? CurrencyType)
-            self.dismiss(animated: true)
-        })
+            let currenciesList = CollectionView<SelectCurrencyCell, CurrencyType>(frame: .zero, collectionViewLayout: layout, handler: { [unowned self] currency in
+                onCurrencySelected?(currency as? CurrencyType)
+                dismiss(animated: true)
+            })
         #endif
 
         currenciesList.backgroundColor = .clear
@@ -56,22 +56,18 @@ class SelectCurrencyScreen: UIViewController, AnySelectView {
 extension SelectCurrencyScreen: CollectionViewSelectDelegate {
     func onSelected(data: Any) {
         #if USING_DELEGATES
-        previousScreen?.onCurrencySelected(currency: data as? String ?? "")
-        dismiss(animated: true)
+            previousScreen?.onCurrencySelected(currency: data as? String ?? "")
+            dismiss(animated: true)
         #else
-        onCurrencySelected?(data as? CurrencyType)
+            onCurrencySelected?(data as? CurrencyType)
         #endif
     }
 }
 
 extension SelectCurrencyScreen: SelectCurrencyScreenDelegate {
-    func onCurrencySelected(currency: String) {
-        
-    }
+    func onCurrencySelected(currency _: String) {}
 }
 
 extension SelectCurrencyScreen: AnyScreen {
-    func present(screen: any AnyScreen) {
-        
-    }
+    func present(screen _: any AnyScreen) {}
 }

@@ -1,7 +1,7 @@
 import Combine
-import UIKit
-import SnapKit
 import NetworkManager
+import SnapKit
+import UIKit
 
 protocol AnyScreen {
     func present(screen: AnyScreen)
@@ -9,7 +9,7 @@ protocol AnyScreen {
 
 extension AnyScreen where Self: UIViewController {
     func presentController(screen: AnyScreen & UIViewController) {
-        self.present(screen, animated: true)
+        present(screen, animated: true)
     }
 }
 
@@ -20,7 +20,7 @@ protocol AnyHomeView: AnyScreen, AnyObject {
 
 class HomePresenter {
     unowned var view: AnyHomeView!
-    
+
     init(view: AnyHomeView) {
         self.view = view
     }
@@ -32,16 +32,17 @@ class HomePresenter {
             print("cell text received \(String(describing: currency))")
         })
     }
-    
+
     func convertCurrency(amountText: String, fromCurrency: String?, toCurrency: String?) {
         guard let amount = Int(amountText),
-              let fromCurrency = fromCurrency, !fromCurrency.isEmpty,
-              let toCurrency = toCurrency, !toCurrency.isEmpty else {
+              let fromCurrency, !fromCurrency.isEmpty,
+              let toCurrency, !toCurrency.isEmpty
+        else {
             print("Fill all the blanks")
             return
         }
 
-        Task {[weak self] in
+        Task { [weak self] in
             guard let self else {
                 return
             }
@@ -58,9 +59,7 @@ class HomePresenter {
                 } else {
                     print("Cannot complete convertation")
                 }
-            } catch {
-
-            }
+            } catch {}
         }
     }
 }

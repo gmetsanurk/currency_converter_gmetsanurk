@@ -1,24 +1,24 @@
-import Foundation
-import UIKit
 import CoreData
+import Foundation
 import NetworkManager
+import UIKit
 
 actor CoreDataManager {
     public static let shared = CoreDataManager()
 
-    private init() { }
+    private init() {}
 
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "CurrencyConverter")
-        container.loadPersistentStores { storeDescription, error in
+        container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         }
         return container
     }()
-    
-    private func saveContext () {
+
+    private func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
@@ -29,11 +29,11 @@ actor CoreDataManager {
             }
         }
     }
-    
+
     private var context: NSManagedObjectContext {
         persistentContainer.viewContext
     }
-    
+
     public func logCoreDataDBPath() {
         if let url = persistentContainer.persistentStoreCoordinator.persistentStores.first?.url {
             print("DataBase URL - \(url)")
@@ -46,15 +46,15 @@ actor CoreDataManager {
             return (try? context.fetch(fetchRequest) as? [CoreDataCurrency]) ?? []
         }
     }
-    
+
     func deleteAllCurrencies() {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CoreDataCurrency")
         do {
             let currencies = try? context.fetch(fetchRequest) as? [CoreDataCurrency]
-            currencies?.forEach{ context.delete($0)}
+            currencies?.forEach { context.delete($0) }
         }
     }
-    
+
     private func coreDataIsEmpty() async -> Bool {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "CoreDataCurrency")
         fetchRequest.fetchLimit = 1
@@ -69,16 +69,15 @@ actor CoreDataManager {
 }
 
 extension CoreDataManager: LocalDatabase {
-    
     func save(currencies: Currencies) async throws {
-        let backgroundContext = self.context
-        
-        backgroundContext.perform  { [weak self] in
-            guard let self = self else {
+        let backgroundContext = context
+
+        backgroundContext.perform { [weak self] in
+            guard let self else {
                 return
             }
         }
-        currencies.currencies.forEach { code, fullName in
+        for (code, fullName) in currencies.currencies {
             let currencyEntity = NSEntityDescription.insertNewObject(
                 forEntityName: "CoreDataCurrency",
                 into: backgroundContext
@@ -93,10 +92,10 @@ extension CoreDataManager: LocalDatabase {
             backgroundContext.rollback()
         }
     }
-    
+
     func loadCurrencies() async throws -> Currencies {
         let currencies = fetchCurrencies()
-        
+
         return Currencies(
             currencies: .init(
                 uniqueKeysWithValues: Set(currencies).map {
@@ -106,7 +105,7 @@ extension CoreDataManager: LocalDatabase {
             success: true
         )
     }
-    
+
     func isEmptyCurrencies() async -> Bool {
         await coreDataIsEmpty()
     }

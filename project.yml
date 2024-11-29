@@ -37,6 +37,8 @@ targets:
         - package: NetworkManager
         #- target: NetworkManager
     postCompileScripts:
+        - script: "mint run swiftformat . --swiftversion 5.9"
+          name: SwiftFormat
         - script: "mint run swiftlint"
           name: SwiftLint
   CurrentConverterAppTests:
@@ -49,8 +51,10 @@ targets:
     info:
         path: CurrentConverterAppTests/Info.plist
     postCompileScripts:
-      - script: "mint run swiftlint"
-        name: SwiftLint
+        - script: "mint run swiftformat . --swiftversion 5.9"
+          name: SwiftFormat
+        - script: "mint run swiftlint"
+          name: SwiftLint
     
 
 #  NetworkManager:

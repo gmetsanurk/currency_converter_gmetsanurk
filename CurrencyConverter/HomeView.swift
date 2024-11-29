@@ -1,7 +1,7 @@
 import Combine
-import UIKit
-import SnapKit
 import NetworkManager
+import SnapKit
+import UIKit
 
 class HomeView: UIViewController {
     var selectedCurrencyLabel = UILabel()
@@ -18,86 +18,81 @@ class HomeView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = .green
-        
-#if USING_DELEGATES
-        let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
-            let selectCurrenciesScreen = SelectCurrencyScreen()
-            selectCurrenciesScreen.previousScreen = self
-            self.present(selectCurrenciesScreen, animated: true)
-        })
-#else
-        let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
-            Task { [weak self] in
-                await self?.presenter.handleSelectSourceCurrency()
-            }
-        })
-#endif
-        
+
+        #if USING_DELEGATES
+            let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
+                let selectCurrenciesScreen = SelectCurrencyScreen()
+                selectCurrenciesScreen.previousScreen = self
+                present(selectCurrenciesScreen, animated: true)
+            })
+        #else
+            let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
+                Task { [weak self] in
+                    await self?.presenter.handleSelectSourceCurrency()
+                }
+            })
+        #endif
+
         buttonOpenSourceCurrency.setTitle(NSLocalizedString("home_view.select_source_currency", comment: "Select source curency"), for: .normal)
         buttonOpenSourceCurrency.setTitleColor(.white, for: .normal)
         view.addSubview(buttonOpenSourceCurrency)
-        
+
         buttonOpenSourceCurrency.snp.makeConstraints { make in
             make.top.equalTo(view).inset(100)
             make.centerX.equalTo(view)
         }
-        
-        
+
         selectedCurrencyLabel.text = "-"
         view.addSubview(selectedCurrencyLabel)
-        
+
         selectedCurrencyLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(200)
             make.centerX.equalTo(view)
         }
-        
-        
-        let convertFromButton = self.createCurrencyButton(title: NSLocalizedString("home_view.from", comment: "From button"))
+
+        let convertFromButton = createCurrencyButton(title: NSLocalizedString("home_view.from", comment: "From button"))
         convertFromButton.tag = 1
         view.addSubview(convertFromButton)
-        
+
         convertFromButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(250)
             make.centerX.equalToSuperview().multipliedBy(0.65)
             make.width.equalTo(100)
             make.height.equalTo(50)
         }
-        
-        
-        let convertToButton = self.createCurrencyButton(title: NSLocalizedString("home_view.to", comment: "To button"))
+
+        let convertToButton = createCurrencyButton(title: NSLocalizedString("home_view.to", comment: "To button"))
         convertToButton.tag = 2
         view.addSubview(convertToButton)
-        
+
         convertToButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(250)
             make.centerX.equalToSuperview().multipliedBy(1.35)
             make.width.equalTo(100)
             make.height.equalTo(50)
         }
-        
-        
-        self.addTextField()
+
+        addTextField()
         currencyAmountTextField.delegate = self
-        
-        
+
         let doConvertActionButton = UIButton(type: .system)
         doConvertActionButton.setTitle(NSLocalizedString("home_view.convert", comment: "Convert button"), for: .normal)
         doConvertActionButton.addAction(UIAction { [unowned self] _ in
-            //print("button pressed")
+            // print("button pressed")
             print("check before .convertCurrency call: \(currencyAmountTextField.text) + \(convertFromButtonSelected) + \(convertToButtonSelected)")
             guard let amountTextString = currencyAmountTextField.text else {
                 return
             }
-            self.presenter.convertCurrency(amountText: amountTextString, fromCurrency: convertFromButtonSelected, toCurrency: convertToButtonSelected)
+            presenter.convertCurrency(amountText: amountTextString, fromCurrency: convertFromButtonSelected, toCurrency: convertToButtonSelected)
         }, for: .touchUpInside)
         view.addSubview(doConvertActionButton)
-        
+
         doConvertActionButton.backgroundColor = .systemBlue
         doConvertActionButton.setTitleColor(.white, for: .normal)
         doConvertActionButton.layer.cornerRadius = 10
-        
+
         doConvertActionButton.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(360)
             make.centerX.equalTo(view)
@@ -121,17 +116,17 @@ class HomeView: UIViewController {
         selectedCurrencyLabel.text = currency?.fullName
     }
 
-    /*override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    /* override func viewDidAppear(_ animated: Bool) {
+         super.viewDidAppear(animated)
 
-        if self.view.backgroundColor == .yellow {
-            return
-        }
+         if self.view.backgroundColor == .yellow {
+             return
+         }
 
-        let controller = HomeViewController()
-        controller.view.backgroundColor = .yellow
-        present(controller, animated: true)
-    }*/
+         let controller = HomeViewController()
+         controller.view.backgroundColor = .yellow
+         present(controller, animated: true)
+     } */
 }
 
 extension HomeView: SelectCurrencyScreenDelegate {
@@ -139,14 +134,14 @@ extension HomeView: SelectCurrencyScreenDelegate {
         selectedCurrencyLabel.text = currency
         print("cell text received \(currency)")
     }
-    
+
     public func updateFromToButtons(button: UIButton, selectedCurrency: String) {
         switch button.tag {
         case 1:
-            self.convertFromButtonSelected = selectedCurrency
+            convertFromButtonSelected = selectedCurrency
             print("\(convertFromButtonSelected) and \(selectedCurrency)")
         case 2:
-            self.convertToButtonSelected = selectedCurrency
+            convertToButtonSelected = selectedCurrency
             print("\(convertToButtonSelected) and \(selectedCurrency)")
         default:
             return
@@ -156,38 +151,37 @@ extension HomeView: SelectCurrencyScreenDelegate {
 
 extension HomeView: UITextFieldDelegate {
     func addTextField() {
-        
         currencyAmountTextField.borderStyle = .roundedRect
         currencyAmountTextField.keyboardType = .numberPad
         currencyAmountTextField.placeholder = NSLocalizedString("home_view.enter_amount", comment: "Enter amount textField sign")
         view.addSubview(currencyAmountTextField)
-        
+
         currencyAmountTextField.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(310)
             make.centerX.equalTo(view)
             make.width.equalTo(210)
         }
-        
+
         adDoneButtonOnKeyboard()
     }
-    
+
     func adDoneButtonOnKeyboard() {
         let toolBar = UIToolbar()
         toolBar.sizeToFit()
-        
+
         let doneButton = UIBarButtonItem(title: NSLocalizedString("home_view.done", comment: "Done keyboard button"), style: .done, target: self, action: #selector(doneButtonTapped))
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.items = [flexSpace, doneButton]
         currencyAmountTextField.inputAccessoryView = toolBar
     }
-    
+
     @objc private func doneButtonTapped() {
         currencyAmountTextField.resignFirstResponder()
     }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+
+    func textField(_: UITextField, shouldChangeCharactersIn _: NSRange, replacementString string: String) -> Bool {
         if string.isEmpty { return true }
-        
+
         let allowedCharacters = CharacterSet.decimalDigits
         let characterSet = CharacterSet(charactersIn: string)
         return allowedCharacters.isSuperset(of: characterSet)
@@ -197,21 +191,21 @@ extension HomeView: UITextFieldDelegate {
 extension HomeView {
     func createCurrencyButton(title: String) -> UIButton {
         let button = UIButton()
-        
+
         button.addAction(UIAction { [weak self, weak button] _ in
             let selectCurrencyScreen = SelectCurrencyScreen()
             selectCurrencyScreen.onCurrencySelected = { [weak button] currency in
                 if let unwrappedButton = button {
                     unwrappedButton.setTitle(currency?.code, for: .normal)
                     print("Currency selected: \(String(describing: currency?.fullName))")
-                    
+
                     let selectedCurrency = String(currency?.code ?? "")
                     self?.updateFromToButtons(button: unwrappedButton, selectedCurrency: selectedCurrency)
                 }
             }
             self?.present(screen: selectCurrencyScreen)
         }, for: .touchUpInside)
-        
+
         button.setTitle(title, for: .normal)
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
@@ -219,10 +213,11 @@ extension HomeView {
         return button
     }
 }
+
 extension HomeView: AnyHomeView {
     func present(screen: AnyScreen) {
         if let screenController = screen as? (UIViewController & AnyScreen) {
-            self.presentController(screen: screenController)
+            presentController(screen: screenController)
         }
     }
 
@@ -233,6 +228,4 @@ extension HomeView: AnyHomeView {
     }
 }
 
-extension HomeView: URLSessionDelegate, URLSessionTaskDelegate {
-
-}
+extension HomeView: URLSessionDelegate, URLSessionTaskDelegate {}
