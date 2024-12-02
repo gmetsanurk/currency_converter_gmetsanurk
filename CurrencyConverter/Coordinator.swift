@@ -13,8 +13,8 @@ struct UIKitCoordinator: Coordinator {
     }
 
     func openHomeScreen() {
-        if let selectCurrencyScreen = window.rootViewController as? SelectCurrencyScreen {
-            selectCurrencyScreen.dismiss(animated: true)
+        if let someScreen = window.rootViewController, let presentedViewController = someScreen.presentedViewController as? SelectCurrencyScreen {
+            presentedViewController.dismiss(animated: true)
         } else {
             window.rootViewController = HomeView()
             window.makeKeyAndVisible()

@@ -14,7 +14,8 @@ extension AnyScreen where Self: UIViewController {
 }
 
 protocol AnyHomeView: AnyScreen, AnyObject {
-    func currencySelected(currency: CurrencyType?)
+    func fromCurrencySelected(currency: CurrencyType?)
+    func toCurrencySelected(currency: CurrencyType?)
     func conversionCompleted(result: String)
 }
 
@@ -26,10 +27,23 @@ class HomePresenter {
     }
 
     @MainActor
-    func handleSelectSourceCurrency() async {
+    func handleSelectFromCurrency() async {
+        await handleSelectCurrency { [weak self] currency in
+            self?.view.fromCurrencySelected(currency: currency)
+        }
+    }
+
+    @MainActor
+    func handleSelectToCurrency() async {
+        await handleSelectCurrency { [weak self] currency in
+            self?.view.toCurrencySelected(currency: currency)
+        }
+    }
+
+    private func handleSelectCurrency(onSelected: ((CurrencyType?) -> Void)!) async {
         let coordinator = await dependencies.resolve(Coordinator.self)
         coordinator?.openCurrenciesScreen(onCurrencySelected: { [weak self] currency in
-            self?.view.currencySelected(currency: currency)
+            onSelected(currency)
             print("cell text received \(String(describing: currency))")
             coordinator?.openHomeScreen()
         })
