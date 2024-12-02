@@ -224,17 +224,18 @@ extension HomeView: AnyHomeView {
     }
 
     func fromCurrencySelected(currency: CurrencyType?) {
-        let selectedCurrency = String(currency?.code ?? "")
-        convertFromButton.setTitle(currency?.code, for: .normal)
-        updateFromToButtons(button: convertFromButton, selectedCurrency: selectedCurrency)
-        selectedCurrencyLabel.text = currency?.fullName
+        currencySelected(currency: currency, button: convertFromButton)
     }
 
     func toCurrencySelected(currency: CurrencyType?) {
+        currencySelected(currency: currency, button: convertToButton)
+    }
+
+    private func currencySelected(currency: CurrencyType?, button: UIButton) {
         let selectedCurrency = String(currency?.code ?? "")
-        convertToButton.setTitle(currency?.code, for: .normal)
-        updateFromToButtons(button: convertToButton, selectedCurrency: selectedCurrency)
-        // selectedCurrencyLabel.text = currency?.fullName
+        button.setTitle(currency?.code, for: .normal)
+        updateFromToButtons(button: button, selectedCurrency: selectedCurrency)
+        selectedCurrencyLabel.text = currency?.fullName
     }
 
     func conversionCompleted(result: String) {

@@ -40,9 +40,10 @@ class HomePresenter {
         }
     }
 
+    @MainActor
     private func handleSelectCurrency(onSelected: ((CurrencyType?) -> Void)!) async {
         let coordinator = await dependencies.resolve(Coordinator.self)
-        coordinator?.openCurrenciesScreen(onCurrencySelected: { [weak self] currency in
+        coordinator?.openCurrenciesScreen(onCurrencySelected: { currency in
             onSelected(currency)
             print("cell text received \(String(describing: currency))")
             coordinator?.openHomeScreen()
