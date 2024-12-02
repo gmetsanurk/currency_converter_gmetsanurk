@@ -33,7 +33,6 @@ class SelectCurrencyScreen: UIViewController, AnySelectView {
         #else
             let currenciesList = CollectionView<SelectCurrencyCell, CurrencyType>(frame: .zero, collectionViewLayout: layout, handler: { [unowned self] currency in
                 onCurrencySelected?(currency as? CurrencyType)
-                dismiss(animated: true)
             })
         #endif
 

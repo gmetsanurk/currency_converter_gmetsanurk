@@ -193,17 +193,9 @@ extension HomeView {
         let button = UIButton()
 
         button.addAction(UIAction { [weak self, weak button] _ in
-            let selectCurrencyScreen = SelectCurrencyScreen()
-            selectCurrencyScreen.onCurrencySelected = { [weak button] currency in
-                if let unwrappedButton = button {
-                    unwrappedButton.setTitle(currency?.code, for: .normal)
-                    print("Currency selected: \(String(describing: currency?.fullName))")
-
-                    let selectedCurrency = String(currency?.code ?? "")
-                    self?.updateFromToButtons(button: unwrappedButton, selectedCurrency: selectedCurrency)
-                }
+            Task { [weak self] in
+                await self?.presenter.handleSelectSourceCurrency()
             }
-            self?.present(screen: selectCurrencyScreen)
         }, for: .touchUpInside)
 
         button.setTitle(title, for: .normal)

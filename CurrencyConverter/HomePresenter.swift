@@ -27,9 +27,11 @@ class HomePresenter {
 
     @MainActor
     func handleSelectSourceCurrency() async {
-        await dependencies.resolve(Coordinator.self)?.openCurrenciesSelection(onCurrencySelected: { [weak self] currency in
+        let coordinator = await dependencies.resolve(Coordinator.self)
+        coordinator?.openCurrenciesScreen(onCurrencySelected: { [weak self] currency in
             self?.view.currencySelected(currency: currency)
             print("cell text received \(String(describing: currency))")
+            coordinator?.openHomeScreen()
         })
     }
 

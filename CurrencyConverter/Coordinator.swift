@@ -2,7 +2,7 @@ import UIKit
 
 protocol Coordinator {
     func openHomeScreen()
-    func openCurrenciesSelection(onCurrencySelected: @escaping SelectCurrencyScreenHandler)
+    func openCurrenciesScreen(onCurrencySelected: @escaping SelectCurrencyScreenHandler)
 }
 
 struct UIKitCoordinator: Coordinator {
@@ -13,11 +13,15 @@ struct UIKitCoordinator: Coordinator {
     }
 
     func openHomeScreen() {
-        window.rootViewController = HomeView()
-        window.makeKeyAndVisible()
+        if let selectCurrencyScreen = window.rootViewController as? SelectCurrencyScreen {
+            selectCurrencyScreen.dismiss(animated: true)
+        } else {
+            window.rootViewController = HomeView()
+            window.makeKeyAndVisible()
+        }
     }
 
-    func openCurrenciesSelection(onCurrencySelected: @escaping SelectCurrencyScreenHandler) {
+    func openCurrenciesScreen(onCurrencySelected: @escaping SelectCurrencyScreenHandler) {
         let selectCurrenciesScreen = SelectCurrencyScreen()
         selectCurrenciesScreen.onCurrencySelected = onCurrencySelected
         if let homeView = window.rootViewController as? HomeView {
