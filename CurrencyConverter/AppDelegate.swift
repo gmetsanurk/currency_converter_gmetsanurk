@@ -1,6 +1,7 @@
 import Combine
 import CoreData
 import NetworkManager
+import SwiftUI
 import Swinject
 import UIKit
 
@@ -56,6 +57,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupWindow() {
         window = UIWindow(frame: UIScreen.main.bounds)
+
+        /*
+         let homeViewSwiftUI = HomeViewSwiftUI()
+         let hostingController = HomeViewSwiftUIController(rootView: homeViewSwiftUI)
+
+         window?.rootViewController = HomeView()
+         // window?.rootViewController = hostingController
+
+         window?.makeKeyAndVisible()
+         */
         dependencies.container.register(Coordinator.self) { [weak self] _ in
             UIKitCoordinator(window: self?.window ?? .init())
         }
