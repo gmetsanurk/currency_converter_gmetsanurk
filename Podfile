@@ -6,5 +6,5 @@ target 'CurrentConverterApp' do
 end
 
 target 'CurrentConverterAppTests' do
-
+  pod 'SnapKit', '~> 5.7.1'
 end
