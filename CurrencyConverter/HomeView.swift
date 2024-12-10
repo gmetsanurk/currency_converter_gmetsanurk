@@ -38,6 +38,7 @@ class HomeView: UIViewController {
         #endif
 
         buttonOpenSourceCurrency.setTitle(NSLocalizedString("home_view.select_source_currency", comment: "Select source curency"), for: .normal)
+        buttonOpenSourceCurrency.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.selectSourceCurrency
         buttonOpenSourceCurrency.setTitleColor(.white, for: .normal)
         view.addSubview(buttonOpenSourceCurrency)
 
@@ -61,7 +62,7 @@ class HomeView: UIViewController {
                 await self?.presenter.handleSelectFromCurrency()
             }
         }
-        convertFromButton.tag = 1
+        convertFromButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.fromButton
         view.addSubview(convertFromButton)
         self.convertFromButton = convertFromButton
 
@@ -79,7 +80,7 @@ class HomeView: UIViewController {
                 await self?.presenter.handleSelectToCurrency()
             }
         }
-        convertToButton.tag = 2
+        convertToButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.toButton
         view.addSubview(convertToButton)
         self.convertToButton = convertToButton
 
@@ -95,6 +96,7 @@ class HomeView: UIViewController {
 
         let doConvertActionButton = UIButton(type: .system)
         doConvertActionButton.setTitle(NSLocalizedString("home_view.convert", comment: "Convert button"), for: .normal)
+        doConvertActionButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.convertButton
         doConvertActionButton.addAction(UIAction { [unowned self] _ in
             // print("button pressed")
             print("check before .convertCurrency call: \(currencyAmountTextField.text) + \(convertFromButtonSelected) + \(convertToButtonSelected)")
@@ -146,23 +148,11 @@ extension HomeView: SelectCurrencyScreenDelegate {
         selectedCurrencyLabel.text = currency
         print("cell text received \(currency)")
     }
-
-    public func updateFromToButtons(button: UIButton, selectedCurrency: String) {
-        switch button.tag {
-        case 1:
-            convertFromButtonSelected = selectedCurrency
-            print("\(convertFromButtonSelected) and \(selectedCurrency)")
-        case 2:
-            convertToButtonSelected = selectedCurrency
-            print("\(convertToButtonSelected) and \(selectedCurrency)")
-        default:
-            return
-        }
-    }
 }
 
 extension HomeView: UITextFieldDelegate {
     func addTextField() {
+        currencyAmountTextField.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.currencyAmountTextField
         currencyAmountTextField.borderStyle = .roundedRect
         currencyAmountTextField.keyboardType = .numberPad
         currencyAmountTextField.placeholder = NSLocalizedString("home_view.enter_amount", comment: "Enter amount textField sign")
@@ -182,6 +172,7 @@ extension HomeView: UITextFieldDelegate {
         toolBar.sizeToFit()
 
         let doneButton = UIBarButtonItem(title: NSLocalizedString("home_view.done", comment: "Done keyboard button"), style: .done, target: self, action: #selector(doneButtonTapped))
+        doneButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.keyboardDone
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.items = [flexSpace, doneButton]
         currencyAmountTextField.inputAccessoryView = toolBar
@@ -234,7 +225,6 @@ extension HomeView: AnyHomeView {
     private func currencySelected(currency: CurrencyType?, button: UIButton) {
         let selectedCurrency = String(currency?.code ?? "")
         button.setTitle(currency?.code, for: .normal)
-        updateFromToButtons(button: button, selectedCurrency: selectedCurrency)
         selectedCurrencyLabel.text = currency?.fullName
     }
 
