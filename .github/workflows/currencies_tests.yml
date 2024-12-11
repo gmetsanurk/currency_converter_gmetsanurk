@@ -17,6 +17,6 @@ jobs:
       - name: Install Mint
         run: brew install mint
       - name: Generate Xcode project
-        run: mint bootstrap && mint run xcodegen
+        run: mint bootstrap && mint run xcodegen && pod install
       - name: Build and test
         run: xcodebuild test -project CurrentConverter.xcodeproj -scheme CurrentConverterApp -destination "platform=iOS Simulator,OS=18.0,name=iPhone 15"
