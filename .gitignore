@@ -6,3 +6,6 @@ CurrentConverterAppTests/Info.plist
 build/
 Pods/
 CurrentConverter.xcworkspace
+CurrentConverterAppUITests/Info.plist
+fastlane/README.md
+fastlane/report.xml
