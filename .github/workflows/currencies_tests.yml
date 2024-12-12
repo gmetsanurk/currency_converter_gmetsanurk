@@ -3,6 +3,9 @@ name: Currentcies tests
 on:
   pull_request:
     branches: [main]
+  push:
+    branches:
+      - feature/ruby
 
 jobs:
   build:
