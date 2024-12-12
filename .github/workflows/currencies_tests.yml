@@ -28,6 +28,6 @@ jobs:
       - name: CocoaPods
         run: bundle exec pod install
       - name: Build and test
-        run: xcodebuild test -project CurrentConverter.xcworkspace -scheme CurrentConverterApp -destination "platform=iOS Simulator,OS=18.0,name=iPhone 15"
+        run: xcodebuild test -workspace CurrentConverter.xcworkspace -scheme CurrentConverterApp -destination "platform=iOS Simulator,OS=18.0,name=iPhone 15"
 
 
