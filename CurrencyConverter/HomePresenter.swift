@@ -27,6 +27,13 @@ class HomePresenter {
     }
 
     @MainActor
+    func handleSelectSourceCurrency() async {
+        await handleSelectCurrency { [weak self] currency in
+            self?.view.fromCurrencySelected(currency: currency)
+        }
+    }
+
+    @MainActor
     func handleSelectFromCurrency() async {
         await handleSelectCurrency { [weak self] currency in
             self?.view.fromCurrencySelected(currency: currency)
