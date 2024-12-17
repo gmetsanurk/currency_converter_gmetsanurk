@@ -9,3 +9,4 @@ CurrentConverter.xcworkspace
 CurrentConverterAppUITests/Info.plist
 fastlane/README.md
 fastlane/report.xml
+fastlane/test_output
