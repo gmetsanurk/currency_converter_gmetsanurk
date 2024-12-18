@@ -17,7 +17,11 @@ default_platform(:ios)
 
 platform :ios do
   desc "Description of what the lane does"
-  lane :custom_lane do
-    run_tests
+  lane :test do
+    xcodegen  
+  
+    cocoapods
+
+    scan
   end
 end

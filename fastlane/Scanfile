@@ -1,0 +1,9 @@
+scheme("CurrentConverterApp")
+
+workspace("CurrentConverter.xcworkspace")
+
+devices(["iPhone 15 (18.0)"])
+
+clean(true)
+
+output_types("html")
