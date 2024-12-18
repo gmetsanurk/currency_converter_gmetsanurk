@@ -4,6 +4,13 @@ echo "Starting project setup..."
 
 # Install Mint
 if command -v mint >/dev/null; then
+
+else
+    brew install mint
+fi
+
+# Install Mint
+if command -v mint >/dev/null; then
     echo "Bootstrapping Mint packages..."
     mint bootstrap || { echo "Error: Failed to install Mint dependencies"; exit 2; }
 else
