@@ -4,7 +4,7 @@ echo "Starting project setup..."
 
 # Install Mint
 if command -v mint >/dev/null; then
-
+    echo "Mint is already installed"
 else
     brew install mint
 fi
