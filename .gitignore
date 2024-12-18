@@ -4,3 +4,5 @@ NetworkManager/Info.plist
 NetworkManager/.swiftpm/
 CurrentConverterAppTests/Info.plist
 build/
+Pods/
+CurrentConverter.xcworkspace
