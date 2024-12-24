@@ -7,7 +7,7 @@ options:
 packages:
   RealmSwift:
     url: https://github.com/realm/realm-swift
-    version: 10.49.0
+    version: 10.54.2
   Swinject:
     url: https://github.com/Swinject/Swinject.git
     version: 2.9.1
