@@ -72,7 +72,7 @@ extension CoreDataManager: LocalDatabase {
     func save(currencies: Currencies) async throws {
         let backgroundContext = context
 
-        backgroundContext.perform { [weak self] in
+        await backgroundContext.perform { [weak self] in
             guard let self else {
                 return
             }
