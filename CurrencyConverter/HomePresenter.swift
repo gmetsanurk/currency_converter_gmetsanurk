@@ -19,7 +19,8 @@ protocol AnyHomeView: AnyScreen, AnyObject {
     func conversionCompleted(result: String)
 }
 
-class HomePresenter {
+@objc
+class HomePresenter: NSObject {
     unowned var view: AnyHomeView!
 
     init(view: AnyHomeView) {
@@ -45,6 +46,11 @@ class HomePresenter {
         await handleSelectCurrency { [weak self] currency in
             self?.view.toCurrencySelected(currency: currency)
         }
+    }
+
+    @objc
+    func handleSelectToCurrency(completion: () -> Void) {
+    
     }
 
     @MainActor

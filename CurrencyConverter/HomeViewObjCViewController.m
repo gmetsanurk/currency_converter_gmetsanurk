@@ -5,11 +5,13 @@
 //  Created by Roman Podymov on 20.01.2025.
 //
 
+#import "CurrentConverterApp-Swift.h"
 #import "HomeViewObjCViewController.h"
 
 @interface HomeViewObjCViewController (PrivateSection)
 
-@property (weak) UIButton* convertFromButton;
+@property (weak, nullable) UIButton* convertFromButton;
+@property (nonatomic) HomePresenter* presenter;
 
 @end
 
@@ -19,6 +21,7 @@
     [super viewDidLoad];
 
     self.view.backgroundColor = UIColor.greenColor;
+    // self.presenter = [[HomePresenter alloc] init];
 }
 
 @end
