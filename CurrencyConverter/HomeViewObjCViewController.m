@@ -21,4 +21,12 @@
     // self.presenter = [[HomePresenter alloc] init];
 }
 
+- (void)setupSelectedCurrencyLabel {
+    self.selectedCurrencyLabel = [[UILabel alloc] init];
+    self.selectedCurrencyLabel.text = @"-";
+    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.selectedCurrencyLabel];
+    
+}
+
 @end
