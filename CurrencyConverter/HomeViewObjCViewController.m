@@ -1,17 +1,14 @@
-//
-//  HomeViewObjCViewController.m
-//  CurrentConverterApp
-//
-//  Created by Roman Podymov on 20.01.2025.
-//
-
 #import "CurrentConverterApp-Swift.h"
 #import "HomeViewObjCViewController.h"
 
-@interface HomeViewObjCViewController (PrivateSection)
+@interface HomeViewObjCViewController (PrivateSection) <UITextFieldDelegate>
 
-@property (weak, nullable) UIButton* convertFromButton;
-@property (nonatomic) HomePresenter* presenter;
+//@property (nonatomic) HomePresenter* presenter;
+@property (weak, nullable) UILabel *selectedCurrencyLabel;
+@property (weak, nullable) UIButton *convertFromButton;
+@property (weak, nullable) UIButton *convertToButton;
+@property (weak, nullable) UITextField *currencyAmountTextField;
+@property (weak, nullable) UIButton *doConvertActionButton;
 
 @end
 
