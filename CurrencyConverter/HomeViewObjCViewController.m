@@ -47,4 +47,14 @@
     [self.view addSubview:button];
 }
 
+- (void)setupConvertToButton {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setTitle:@"To" forState:UIControlStateNormal];
+    button.backgroundColor = [UIColor systemBlueColor];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    button.layer.cornerRadius = 10;
+    self.convertToButton = button;
+    [self.view addSubview:button];
+}
+
 @end
