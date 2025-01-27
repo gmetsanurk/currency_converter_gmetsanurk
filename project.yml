@@ -14,15 +14,14 @@ packages:
   Mocker:
     url: https://github.com/WeTransfer/Mocker
     version: 3.0.2
-  NetworkManager:
-    path: NetworkManager
+  #NetworkManager:
+    #path: NetworkManager
 targets:
   CurrentConverterApp:
     settings:
         base:
         #SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_DELEGATES'
-          SWIFT_VERSION: 5 # Since GitHub does not have Xcode 16 for now
-          SWIFT_OBJC_BRIDGING_HEADER: "CurrencyConverter/CurrentConverterApp-Bridging-Header.h"
+          SWIFT_VERSION: 5.0 # Since GitHub does not have Xcode 16 for now
     type: application
     platform: iOS
     sources: [CurrencyConverter]
@@ -31,7 +30,7 @@ targets:
     dependencies:
         - package: RealmSwift
         - package: Swinject
-        - package: NetworkManager
+        #- package: NetworkManager
         #- target: NetworkManager
     postCompileScripts:
         - script: "mint run swiftlint"
