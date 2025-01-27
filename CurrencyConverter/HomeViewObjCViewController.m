@@ -17,16 +17,34 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.view.backgroundColor = UIColor.greenColor;
+    
     // self.presenter = [[HomePresenter alloc] init];
 }
 
-- (void)setupSelectedCurrencyLabel {
-    self.selectedCurrencyLabel = [[UILabel alloc] init];
-    self.selectedCurrencyLabel.text = @"-";
-    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:self.selectedCurrencyLabel];
+- (void)setupView {
+    self.view.backgroundColor = UIColor.greenColor;
     
+    [self setupSelectedCurrencyLabel];
+    
+}
+
+- (void)setupSelectedCurrencyLabel {
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"-";
+    label.textAlignment = NSTextAlignmentCenter;
+    self.selectedCurrencyLabel = label;
+    
+    [self.view addSubview:self.selectedCurrencyLabel];
+}
+
+- (void)setupConvertFromButton {
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setTitle:@"From" forState:UIControlStateNormal];
+    button.backgroundColor = [UIColor systemBlueColor];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    button.layer.cornerRadius = 10;
+    self.convertFromButton = button;
+    [self.view addSubview:button];
 }
 
 @end
