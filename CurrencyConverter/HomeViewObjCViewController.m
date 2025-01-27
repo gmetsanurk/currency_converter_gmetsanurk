@@ -25,7 +25,10 @@
     self.view.backgroundColor = UIColor.greenColor;
     
     //[self setupSelectedCurrencyLabel];
-    
+    //[self setupConvertFromButton];
+    //[self setupConvertToButton];
+    //[self setupCurrencyAmountTextField];
+    //[self setupDoConvertActionButton];
 }
 
 - (void)setupSelectedCurrencyLabel {
@@ -74,5 +77,17 @@
     button.layer.cornerRadius = 10;
     self.doConvertActionButton = button;
     [self.view addSubview:button];
+}
+
+- (void)setupConstraints{
+    //[self setupSelectedCurrencyLabelConstraints];
+}
+
+- (void)setupSelectedCurrencyLabelConstraints {
+    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.selectedCurrencyLabel.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:200],
+        [self.selectedCurrencyLabel.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor]
+    ]];
 }
 @end
