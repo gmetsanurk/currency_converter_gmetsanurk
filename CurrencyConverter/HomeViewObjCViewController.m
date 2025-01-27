@@ -110,4 +110,13 @@
         [self.convertToButton.heightAnchor constraintEqualToConstant:50]
     ]];
 }
+
+- (void)setupCurrencyAmountTextFieldConstraints {
+    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.currencyAmountTextField.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:310],
+        [self.currencyAmountTextField.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+        [self.currencyAmountTextField.widthAnchor constraintEqualToConstant:210]
+    ]];
+}
 @end
