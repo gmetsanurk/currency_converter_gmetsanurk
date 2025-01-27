@@ -1,7 +1,7 @@
 #import "CurrentConverterApp-Swift.h"
 #import "HomeViewObjCViewController.h"
 
-@interface HomeViewObjCViewController (PrivateSection) <UITextFieldDelegate>
+@interface HomeViewObjCViewController () <UITextFieldDelegate>
 
 //@property (nonatomic) HomePresenter* presenter;
 @property (weak, nullable) UILabel *selectedCurrencyLabel;
@@ -17,6 +17,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupView];
+    [self setupConstraints];
+    [self setupActions];
     
     // self.presenter = [[HomePresenter alloc] init];
 }
@@ -24,13 +26,13 @@
 - (void)setupView {
     self.view.backgroundColor = UIColor.greenColor;
     
-    //[self setupSelectedCurrencyLabel];
-    //[self setupConvertFromButton];
-    //[self setupConvertToButton];
-    //[self setupCurrencyAmountTextField];
-    //[self setupDoConvertActionButton];
+    [self setupSelectedCurrencyLabel];
+    [self setupConvertFromButton];
+    [self setupConvertToButton];
+    [self setupCurrencyAmountTextField];
+    [self setupDoConvertActionButton];
 }
-
+#pragma mark setup methods
 - (void)setupSelectedCurrencyLabel {
     UILabel *label = [[UILabel alloc] init];
     label.text = @"-";
@@ -80,9 +82,13 @@
 }
 
 - (void)setupConstraints{
-    //[self setupSelectedCurrencyLabelConstraints];
+    [self setupSelectedCurrencyLabelConstraints];
+    [self setupConvertFromButtonConstraints];
+    [self setupConvertToButtonConstraints];
+    [self setupCurrencyAmountTextFieldConstraints];
+    [self setupDoConvertActionButtonConstraints];
 }
-
+#pragma mark constraints
 - (void)setupSelectedCurrencyLabelConstraints {
     self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [NSLayoutConstraint activateConstraints:@[
@@ -92,27 +98,27 @@
 }
 
 - (void)setupConvertFromButtonConstraints {
-    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.convertFromButton.translatesAutoresizingMaskIntoConstraints = NO;
     [NSLayoutConstraint activateConstraints:@[
         [self.convertFromButton.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:250],
-        [self.convertFromButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor constant:-100],
+        [self.convertFromButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor constant:-55],
         [self.convertFromButton.widthAnchor constraintEqualToConstant:100],
         [self.convertFromButton.heightAnchor constraintEqualToConstant:50]
     ]];
 }
 
 - (void)setupConvertToButtonConstraints {
-    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.convertToButton.translatesAutoresizingMaskIntoConstraints = NO;
     [NSLayoutConstraint activateConstraints:@[
         [self.convertToButton.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:250],
-        [self.convertToButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor constant:100],
+        [self.convertToButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor constant:55],
         [self.convertToButton.widthAnchor constraintEqualToConstant:100],
         [self.convertToButton.heightAnchor constraintEqualToConstant:50]
     ]];
 }
 
 - (void)setupCurrencyAmountTextFieldConstraints {
-    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.currencyAmountTextField.translatesAutoresizingMaskIntoConstraints = NO;
     [NSLayoutConstraint activateConstraints:@[
         [self.currencyAmountTextField.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:310],
         [self.currencyAmountTextField.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
@@ -127,5 +133,24 @@
         [self.doConvertActionButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
         [self.doConvertActionButton.widthAnchor constraintEqualToConstant:210]
     ]];
+}
+#pragma mark action setup
+- (void)setupActions {
+    [self.convertFromButton addTarget:self action:@selector(convertFromButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.convertToButton addTarget:self action:@selector(convertToButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.doConvertActionButton addTarget:self action:@selector(doConvertActionTapped) forControlEvents:UIControlEventTouchUpInside];
+}
+#pragma mark - methods for actions
+
+- (void)convertFromButtonTapped {
+    NSLog(@"ConvertFrom button tapped");
+}
+
+- (void)convertToButtonTapped {
+    NSLog(@"ConvertTo button tapped");
+}
+
+- (void)doConvertActionTapped {
+    NSLog(@"DoConvertAction button tapped");
 }
 @end
