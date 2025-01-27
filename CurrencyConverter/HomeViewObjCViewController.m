@@ -119,4 +119,13 @@
         [self.currencyAmountTextField.widthAnchor constraintEqualToConstant:210]
     ]];
 }
+
+- (void)setupDoConvertActionButtonConstraints {
+    self.doConvertActionButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.doConvertActionButton.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:360],
+        [self.doConvertActionButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+        [self.doConvertActionButton.widthAnchor constraintEqualToConstant:210]
+    ]];
+}
 @end
