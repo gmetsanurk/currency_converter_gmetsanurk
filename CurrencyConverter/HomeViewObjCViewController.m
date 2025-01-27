@@ -16,7 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    [self setupView];
     
     // self.presenter = [[HomePresenter alloc] init];
 }
@@ -24,7 +24,7 @@
 - (void)setupView {
     self.view.backgroundColor = UIColor.greenColor;
     
-    [self setupSelectedCurrencyLabel];
+    //[self setupSelectedCurrencyLabel];
     
 }
 
@@ -57,4 +57,12 @@
     [self.view addSubview:button];
 }
 
+- (void)setupCurrencyAmountTextField {
+    UITextField *textField = [[UITextField alloc] init];
+    textField.placeholder = @"Enter Amount";
+    textField.borderStyle = UITextBorderStyleRoundedRect;
+    textField.keyboardType = UIKeyboardTypeNumberPad;
+    self.currencyAmountTextField = textField;
+    [self.view addSubview:textField];
+}
 @end
