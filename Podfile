@@ -16,4 +16,6 @@ target 'CurrentConverterAppTests' do
   common_pods
 end
 
-
+target 'CurrentConverterAppUITests' do
+  common_pods
+end
