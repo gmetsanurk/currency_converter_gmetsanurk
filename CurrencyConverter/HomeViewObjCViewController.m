@@ -90,4 +90,14 @@
         [self.selectedCurrencyLabel.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor]
     ]];
 }
+
+- (void)setupConvertFromButtonConstraints {
+    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.convertToButton.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:250],
+        [self.convertToButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor constant:100],
+        [self.convertToButton.widthAnchor constraintEqualToConstant:100],
+        [self.convertToButton.heightAnchor constraintEqualToConstant:50]
+    ]];
+}
 @end
