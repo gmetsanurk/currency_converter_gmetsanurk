@@ -21,7 +21,7 @@ class HomeView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .green
+        view.backgroundColor = AppColors.homeViewBackgroundColor
         
 #if USING_DELEGATES
         buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
@@ -111,7 +111,8 @@ extension HomeView {
     func createButtonOpenSourceCurrency() {
         buttonOpenSourceCurrency.setTitle(NSLocalizedString("home_view.select_source_currency", comment: "Select source curency"), for: .normal)
         buttonOpenSourceCurrency.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.selectSourceCurrency
-        buttonOpenSourceCurrency.setTitleColor(.white, for: .normal)
+        buttonOpenSourceCurrency.setTitleColor(AppColors.homeViewButtonsTextColor, for: .normal)
+        buttonOpenSourceCurrency.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .medium) 
         view.addSubview(buttonOpenSourceCurrency)
         setupButtonOpenSourceCurrencyConstraints()
     }
@@ -129,11 +130,9 @@ extension HomeView {
             presenter.convertCurrency(amountText: amountTextString, fromCurrency: convertFromButtonSelected, toCurrency: convertToButtonSelected)
         }, for: .touchUpInside)
         view.addSubview(doConvertActionButton)
-        
-        doConvertActionButton.backgroundColor = .systemBlue
-        doConvertActionButton.setTitleColor(.white, for: .normal)
-        doConvertActionButton.layer.cornerRadius = 10
-        
+        doConvertActionButton.backgroundColor = AppColors.homeViewButtonsBackgroundColor
+        doConvertActionButton.setTitleColor(AppColors.homeViewButtonsTextColor, for: .normal)
+        doConvertActionButton.layer.cornerRadius = AppGeometry.cornerRadius
         setupDoConvertActionButtonConstraints()
     }
     
@@ -145,9 +144,9 @@ extension HomeView {
         }, for: .touchUpInside)
         
         button.setTitle(title, for: .normal)
-        button.backgroundColor = .systemBlue
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 10
+        button.backgroundColor = AppColors.homeViewButtonsBackgroundColor
+        button.setTitleColor(AppColors.homeViewButtonsTextColor, for: .normal)
+        button.layer.cornerRadius = AppGeometry.cornerRadius
         return button
     }
     
@@ -224,17 +223,18 @@ extension HomeView {
     }
     func setupCurrencyAmountTextFieldConstraints() {
         currencyAmountTextField.snp.makeConstraints { make in
-            make.top.equalTo(selectedCurrencyLabel.snp.bottom).offset(100)
+            make.top.equalTo(selectedCurrencyLabel.snp.bottom).offset(115)
             make.centerX.equalTo(view)
-            make.width.equalTo(210)
+            make.width.equalTo(240)
         }
     }
     
     func setupDoConvertActionButtonConstraints() {
         doConvertActionButton.snp.makeConstraints { make in
-            make.top.equalTo(currencyAmountTextField.snp.bottom).offset(20)
+            make.top.equalTo(currencyAmountTextField.snp.bottom).offset(25)
             make.centerX.equalTo(view)
-            make.width.equalTo(210)
+            make.width.equalTo(240)
+            make.height.equalTo(40)
         }
     }
 }

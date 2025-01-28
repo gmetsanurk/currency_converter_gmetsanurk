@@ -25,7 +25,7 @@ class SelectCurrencyScreen: UIViewController, AnySelectView {
         super.viewDidLoad()
 
         view.accessibilityIdentifier = AccessibilityIdentifiers.SelectCurrencyScreen.screen
-        view.backgroundColor = .red
+        view.backgroundColor = AppColors.selectCurrencyScreenBackgroundColor
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = .init(width: 100, height: 100)
 
