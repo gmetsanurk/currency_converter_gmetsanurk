@@ -8,6 +8,7 @@ class HomeView: UIViewController {
     var buttonOpenSourceCurrency: UIButton!
     var convertFromButton: UIButton!
     var convertToButton: UIButton!
+    var doConvertActionButton: UIButton!
     private var currencyAmountTextField = UITextField()
     var convertToButtonSelected: String?
     var convertFromButtonSelected: String?
@@ -38,82 +39,13 @@ class HomeView: UIViewController {
             })
         #endif
 
-        buttonOpenSourceCurrency.setTitle(NSLocalizedString("home_view.select_source_currency", comment: "Select source curency"), for: .normal)
-        buttonOpenSourceCurrency.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.selectSourceCurrency
-        buttonOpenSourceCurrency.setTitleColor(.white, for: .normal)
-        view.addSubview(buttonOpenSourceCurrency)
-
-        
-        selectedCurrencyLabel.text = "-"
-        view.addSubview(selectedCurrencyLabel)
-
-        setupSelectCurrencyLabelConstraints()
-        setupButtonOpenSourceCurrencyConstraints()
-
-
-        convertFromButton = createCurrencyButton(
-            title: NSLocalizedString("home_view.from", comment: "From button")
-        ) {
-            Task { [weak self] in
-                await self?.presenter.handleSelectFromCurrency()
-            }
-        }
-        convertFromButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.fromButton
-        view.addSubview(convertFromButton)
-        //self.convertFromButton = convertFromButton
-
-        setupConvertFromButtonConstraints()
-
-        convertToButton = createCurrencyButton(
-            title: NSLocalizedString("home_view.to", comment: "To button")
-        ) {
-            Task { [weak self] in
-                await self?.presenter.handleSelectToCurrency()
-            }
-        }
-        convertToButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.toButton
-        view.addSubview(convertToButton)
-        //self.convertToButton = convertToButton
-
-        setupConvertToButtonConstraints()
-
-        addTextField()
-        currencyAmountTextField.delegate = self
-
-        let doConvertActionButton = UIButton(type: .system)
-        doConvertActionButton.setTitle(NSLocalizedString("home_view.convert", comment: "Convert button"), for: .normal)
-        doConvertActionButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.convertButton
-        doConvertActionButton.addAction(UIAction { [unowned self] _ in
-            // print("button pressed")
-            print("check before .convertCurrency call: \(currencyAmountTextField.text) + \(convertFromButtonSelected) + \(convertToButtonSelected)")
-            guard let amountTextString = currencyAmountTextField.text else {
-                return
-            }
-            presenter.convertCurrency(amountText: amountTextString, fromCurrency: convertFromButtonSelected, toCurrency: convertToButtonSelected)
-        }, for: .touchUpInside)
-        view.addSubview(doConvertActionButton)
-
-        doConvertActionButton.backgroundColor = .systemBlue
-        doConvertActionButton.setTitleColor(.white, for: .normal)
-        doConvertActionButton.layer.cornerRadius = 10
-
-        doConvertActionButton.snp.makeConstraints { make in
-            make.top.equalTo(currencyAmountTextField.snp.bottom).offset(20)
-            make.centerX.equalTo(view)
-            make.width.equalTo(210)
-        }
-
-        keyboardWillShowNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.view.frame.origin.y = -200
-            }
-
-        keyboardWillHideNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.view.frame.origin.y = 0.0
-            }
+        createSelectCurrencyLabel()
+        createButtonOpenSourceCurrency()
+        createConvertFromButton()
+        createConvertToButton()
+        createTextField()
+        createDoConvertActionButton()
+        createKeyboard()
     }
 
     /* override func viewDidAppear(_ animated: Bool) {
@@ -137,7 +69,7 @@ extension HomeView: SelectCurrencyScreenDelegate {
 }
 
 extension HomeView: UITextFieldDelegate {
-    func addTextField() {
+    func createTextField() {
         currencyAmountTextField.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.currencyAmountTextField
         currencyAmountTextField.borderStyle = .roundedRect
         currencyAmountTextField.keyboardType = .numberPad
@@ -151,6 +83,7 @@ extension HomeView: UITextFieldDelegate {
         }
 
         adDoneButtonOnKeyboard()
+        currencyAmountTextField.delegate = self
     }
 
     func adDoneButtonOnKeyboard() {
@@ -179,6 +112,41 @@ extension HomeView: UITextFieldDelegate {
 }
 
 extension HomeView {
+    func createSelectCurrencyLabel() {
+        selectedCurrencyLabel.text = "-"
+        view.addSubview(selectedCurrencyLabel)
+        setupSelectCurrencyLabelConstraints()
+    }
+    
+    func createButtonOpenSourceCurrency() {
+        buttonOpenSourceCurrency.setTitle(NSLocalizedString("home_view.select_source_currency", comment: "Select source curency"), for: .normal)
+        buttonOpenSourceCurrency.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.selectSourceCurrency
+        buttonOpenSourceCurrency.setTitleColor(.white, for: .normal)
+        view.addSubview(buttonOpenSourceCurrency)
+        setupButtonOpenSourceCurrencyConstraints()
+    }
+    
+    func createDoConvertActionButton() {
+        doConvertActionButton = UIButton(type: .system)
+        doConvertActionButton.setTitle(NSLocalizedString("home_view.convert", comment: "Convert button"), for: .normal)
+        doConvertActionButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.convertButton
+        doConvertActionButton.addAction(UIAction { [unowned self] _ in
+            // print("button pressed")
+            print("check before .convertCurrency call: \(currencyAmountTextField.text) + \(convertFromButtonSelected) + \(convertToButtonSelected)")
+            guard let amountTextString = currencyAmountTextField.text else {
+                return
+            }
+            presenter.convertCurrency(amountText: amountTextString, fromCurrency: convertFromButtonSelected, toCurrency: convertToButtonSelected)
+        }, for: .touchUpInside)
+        view.addSubview(doConvertActionButton)
+
+        doConvertActionButton.backgroundColor = .systemBlue
+        doConvertActionButton.setTitleColor(.white, for: .normal)
+        doConvertActionButton.layer.cornerRadius = 10
+        
+        setupDoConvertActionButtonConstraints()
+    }
+    
     func createCurrencyButton(title: String, onSelected: (() -> Void)!) -> UIButton {
         let button = UIButton()
 
@@ -191,6 +159,48 @@ extension HomeView {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
         return button
+    }
+    
+    func createConvertFromButton() {
+        convertFromButton = createCurrencyButton(
+            title: NSLocalizedString("home_view.from", comment: "From button")
+        ) {
+            Task { [weak self] in
+                await self?.presenter.handleSelectFromCurrency()
+            }
+        }
+        convertFromButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.fromButton
+        view.addSubview(convertFromButton)
+
+        setupConvertFromButtonConstraints()
+    }
+    
+    func createConvertToButton() {
+        convertToButton = createCurrencyButton(
+            title: NSLocalizedString("home_view.to", comment: "To button")
+        ) {
+            Task { [weak self] in
+                await self?.presenter.handleSelectToCurrency()
+            }
+        }
+        convertToButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.toButton
+        view.addSubview(convertToButton)
+
+        setupConvertToButtonConstraints()
+    }
+    
+    func createKeyboard() {
+        keyboardWillShowNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.view.frame.origin.y = -200
+            }
+
+        keyboardWillHideNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.view.frame.origin.y = 0.0
+            }
     }
     
     func setupSelectCurrencyLabelConstraints() {
@@ -222,6 +232,14 @@ extension HomeView {
             make.top.equalTo(selectedCurrencyLabel.snp.bottom).offset(40)
             make.width.equalTo(100)
             make.height.equalTo(50)
+        }
+    }
+    
+    func setupDoConvertActionButtonConstraints() {
+        doConvertActionButton.snp.makeConstraints { make in
+            make.top.equalTo(currencyAmountTextField.snp.bottom).offset(20)
+            make.centerX.equalTo(view)
+            make.width.equalTo(210)
         }
     }
 }
