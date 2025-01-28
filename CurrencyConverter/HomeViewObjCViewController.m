@@ -1,6 +1,34 @@
 #import "CurrentConverterApp-Swift.h"
 #import "HomeViewObjCViewController.h"
 
+#include "math.h"
+
+struct SSS {
+    int a;
+};
+
+typedef struct {
+    double selectedCurrencyLabelTop;
+} UIConstants;
+
+UIConstants createUIConstants(double selectedCurrencyLabelTop) {
+    UIConstants result;
+    result.selectedCurrencyLabelTop = selectedCurrencyLabelTop;
+    return result;
+}
+
+typedef double(^MyCallback)(int);
+typedef double(*MyCallback2)(int);
+
+void someFun(int a, MyCallback2 callback) {
+    int b = 10;
+    b++;
+}
+
+double someOtherFunc(int a) {
+    return 0;
+}
+
 @interface HomeViewObjCViewController () <UITextFieldDelegate>
 
 //@property (nonatomic) HomePresenter* presenter;
@@ -9,6 +37,7 @@
 @property (weak, nullable) UIButton *convertToButton;
 @property (weak, nullable) UITextField *currencyAmountTextField;
 @property (weak, nullable) UIButton *doConvertActionButton;
+@property (nonatomic) UIConstants constants;
 
 @end
 
@@ -21,6 +50,11 @@
     [self setupActions];
     
     // self.presenter = [[HomePresenter alloc] init];
+
+    _constants = createUIConstants(100);
+    int aaa = _constants.selectedCurrencyLabelTop;
+
+    MyCallback2 pointerToFunc = someOtherFunc;
 }
 
 - (void)setupView {
@@ -38,7 +72,7 @@
     label.text = @"-";
     label.textAlignment = NSTextAlignmentCenter;
     self.selectedCurrencyLabel = label;
-    
+
     [self.view addSubview:self.selectedCurrencyLabel];
 }
 
@@ -92,7 +126,7 @@
 - (void)setupSelectedCurrencyLabelConstraints {
     self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [NSLayoutConstraint activateConstraints:@[
-        [self.selectedCurrencyLabel.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:200],
+        [self.selectedCurrencyLabel.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:_constants.selectedCurrencyLabelTop],
         [self.selectedCurrencyLabel.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor]
     ]];
 }
