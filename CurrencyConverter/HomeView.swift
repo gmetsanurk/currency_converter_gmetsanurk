@@ -5,8 +5,9 @@ import UIKit
 
 class HomeView: UIViewController {
     var selectedCurrencyLabel = UILabel()
-    unowned var convertFromButton: UIButton!
-    unowned var convertToButton: UIButton!
+    var buttonOpenSourceCurrency: UIButton!
+    var convertFromButton: UIButton!
+    var convertToButton: UIButton!
     private var currencyAmountTextField = UITextField()
     var convertToButtonSelected: String?
     var convertFromButtonSelected: String?
@@ -24,13 +25,13 @@ class HomeView: UIViewController {
         view.backgroundColor = .green
 
         #if USING_DELEGATES
-            let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
+            buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
                 let selectCurrenciesScreen = SelectCurrencyScreen()
                 selectCurrenciesScreen.previousScreen = self
                 present(selectCurrenciesScreen, animated: true)
             })
         #else
-            let buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
+            buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
                 Task { [weak self] in
                     await self?.presenter.handleSelectFromCurrency()
                 }
@@ -42,20 +43,15 @@ class HomeView: UIViewController {
         buttonOpenSourceCurrency.setTitleColor(.white, for: .normal)
         view.addSubview(buttonOpenSourceCurrency)
 
-        buttonOpenSourceCurrency.snp.makeConstraints { make in
-            make.top.equalTo(view).inset(100)
-            make.centerX.equalTo(view)
-        }
-
+        
         selectedCurrencyLabel.text = "-"
         view.addSubview(selectedCurrencyLabel)
 
-        selectedCurrencyLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(200)
-            make.centerX.equalTo(view)
-        }
+        setupSelectCurrencyLabelConstraints()
+        setupButtonOpenSourceCurrencyConstraints()
 
-        let convertFromButton = createCurrencyButton(
+
+        convertFromButton = createCurrencyButton(
             title: NSLocalizedString("home_view.from", comment: "From button")
         ) {
             Task { [weak self] in
@@ -64,16 +60,11 @@ class HomeView: UIViewController {
         }
         convertFromButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.fromButton
         view.addSubview(convertFromButton)
-        self.convertFromButton = convertFromButton
+        //self.convertFromButton = convertFromButton
 
-        convertFromButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(250)
-            make.centerX.equalToSuperview().multipliedBy(0.65)
-            make.width.equalTo(100)
-            make.height.equalTo(50)
-        }
+        setupConvertFromButtonConstraints()
 
-        let convertToButton = createCurrencyButton(
+        convertToButton = createCurrencyButton(
             title: NSLocalizedString("home_view.to", comment: "To button")
         ) {
             Task { [weak self] in
@@ -82,14 +73,9 @@ class HomeView: UIViewController {
         }
         convertToButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.toButton
         view.addSubview(convertToButton)
-        self.convertToButton = convertToButton
+        //self.convertToButton = convertToButton
 
-        convertToButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(250)
-            make.centerX.equalToSuperview().multipliedBy(1.35)
-            make.width.equalTo(100)
-            make.height.equalTo(50)
-        }
+        setupConvertToButtonConstraints()
 
         addTextField()
         currencyAmountTextField.delegate = self
@@ -112,7 +98,7 @@ class HomeView: UIViewController {
         doConvertActionButton.layer.cornerRadius = 10
 
         doConvertActionButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(360)
+            make.top.equalTo(currencyAmountTextField.snp.bottom).offset(20)
             make.centerX.equalTo(view)
             make.width.equalTo(210)
         }
@@ -159,7 +145,7 @@ extension HomeView: UITextFieldDelegate {
         view.addSubview(currencyAmountTextField)
 
         currencyAmountTextField.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(310)
+            make.top.equalTo(selectedCurrencyLabel.snp.bottom).offset(100)
             make.centerX.equalTo(view)
             make.width.equalTo(210)
         }
@@ -205,6 +191,38 @@ extension HomeView {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
         return button
+    }
+    
+    func setupSelectCurrencyLabelConstraints() {
+        selectedCurrencyLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(view)
+            make.centerY.equalTo(view)
+        }
+    }
+    
+    func setupButtonOpenSourceCurrencyConstraints() {
+        buttonOpenSourceCurrency.snp.makeConstraints { make in
+            make.centerX.equalTo(view)
+            make.bottom.equalTo(selectedCurrencyLabel.snp.top).offset(-40)
+        }
+    }
+    
+    func setupConvertFromButtonConstraints() {
+        convertFromButton.snp.makeConstraints { make in
+            make.centerX.equalTo(view).multipliedBy(0.65)
+            make.top.equalTo(selectedCurrencyLabel.snp.bottom).offset(40)
+            make.width.equalTo(100)
+            make.height.equalTo(50)
+        }
+    }
+    
+    func setupConvertToButtonConstraints() {
+        convertToButton.snp.makeConstraints { make in
+            make.centerX.equalTo(view).multipliedBy(1.35)
+            make.top.equalTo(selectedCurrencyLabel.snp.bottom).offset(40)
+            make.width.equalTo(100)
+            make.height.equalTo(50)
+        }
     }
 }
 
