@@ -170,6 +170,7 @@ extension HomeView: UITextFieldDelegate {
     func adDoneButtonOnKeyboard() {
         let toolBar = UIToolbar()
         toolBar.sizeToFit()
+        toolBar.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
 
         let doneButton = UIBarButtonItem(title: NSLocalizedString("home_view.done", comment: "Done keyboard button"), style: .done, target: self, action: #selector(doneButtonTapped))
         doneButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.keyboardDone

@@ -16,7 +16,7 @@ struct UIKitCoordinator: Coordinator {
         if let someScreen = window.rootViewController, let presentedViewController = someScreen.presentedViewController as? SelectCurrencyScreen {
             presentedViewController.dismiss(animated: true)
         } else {
-            window.rootViewController = HomeViewObjCViewController() //HomeView()
+            window.rootViewController = HomeView() //HomeViewObjCViewController()
             window.makeKeyAndVisible()
         }
     }
