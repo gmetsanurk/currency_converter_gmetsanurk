@@ -116,40 +116,54 @@ double someOtherFunc(int a) {
     [self.view addSubview:button];
 }
 
+- (void)setupConstraints{
+    [self setupSelectedCurrencyLabelConstraints];
+    [self setupConvertFromButtonConstraints];
+    [self setupConvertToButtonConstraints];
+    [self setupCurrencyAmountTextFieldConstraints];
+    [self setupDoConvertActionButtonConstraints];
+}
 #pragma mark constraints
-- (void)setupConstraints {
+- (void)setupSelectedCurrencyLabelConstraints {
     [self.selectedCurrencyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).offset(200);
         make.centerX.equalTo(self.view);
     }];
-    
+}
+
+- (void)setupConvertFromButtonConstraints {
     [self.convertFromButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).offset(250);
         make.centerX.equalTo(self.view).offset(-55);
         make.width.equalTo(@100);
         make.height.equalTo(@50);
     }];
-    
+}
+
+- (void)setupConvertToButtonConstraints {
     [self.convertToButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).offset(250);
         make.centerX.equalTo(self.view).offset(55);
         make.width.equalTo(@100);
         make.height.equalTo(@50);
     }];
-    
+}
+
+- (void)setupCurrencyAmountTextFieldConstraints {
     [self.currencyAmountTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).offset(310);
         make.centerX.equalTo(self.view);
         make.width.equalTo(@210);
     }];
-    
+}
+
+- (void)setupDoConvertActionButtonConstraints {
     [self.doConvertActionButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).offset(360);
         make.centerX.equalTo(self.view);
         make.width.equalTo(@210);
     }];
 }
-
 #pragma mark action setup
 - (void)setupActions {
     [self.convertFromButton addTarget:self action:@selector(convertFromButtonTapped) forControlEvents:UIControlEventTouchUpInside];
