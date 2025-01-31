@@ -1,5 +1,6 @@
 #import "CurrentConverterApp-Swift.h"
 #import "HomeViewObjCViewController.h"
+#import "Masonry.h"
 
 #include "math.h"
 
@@ -51,7 +52,7 @@ double someOtherFunc(int a) {
     
     // self.presenter = [[HomePresenter alloc] init];
 
-    _constants = createUIConstants(100);
+    _constants = createUIConstants(200);
     int aaa = _constants.selectedCurrencyLabelTop;
 
     MyCallback2 pointerToFunc = someOtherFunc;
@@ -124,11 +125,10 @@ double someOtherFunc(int a) {
 }
 #pragma mark constraints
 - (void)setupSelectedCurrencyLabelConstraints {
-    self.selectedCurrencyLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [NSLayoutConstraint activateConstraints:@[
-        [self.selectedCurrencyLabel.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:_constants.selectedCurrencyLabelTop],
-        [self.selectedCurrencyLabel.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor]
-    ]];
+    [self.selectedCurrencyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).offset(200);
+        make.centerX.equalTo(self.view);
+    }];
 }
 
 - (void)setupConvertFromButtonConstraints {
