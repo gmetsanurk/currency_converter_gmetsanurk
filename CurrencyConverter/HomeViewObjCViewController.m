@@ -116,58 +116,40 @@ double someOtherFunc(int a) {
     [self.view addSubview:button];
 }
 
-- (void)setupConstraints{
-    [self setupSelectedCurrencyLabelConstraints];
-    [self setupConvertFromButtonConstraints];
-    [self setupConvertToButtonConstraints];
-    [self setupCurrencyAmountTextFieldConstraints];
-    [self setupDoConvertActionButtonConstraints];
-}
 #pragma mark constraints
-- (void)setupSelectedCurrencyLabelConstraints {
+- (void)setupConstraints {
     [self.selectedCurrencyLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.view.mas_top).offset(200);
         make.centerX.equalTo(self.view);
     }];
+    
+    [self.convertFromButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).offset(250);
+        make.centerX.equalTo(self.view).offset(-55);
+        make.width.equalTo(@100);
+        make.height.equalTo(@50);
+    }];
+    
+    [self.convertToButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).offset(250);
+        make.centerX.equalTo(self.view).offset(55);
+        make.width.equalTo(@100);
+        make.height.equalTo(@50);
+    }];
+    
+    [self.currencyAmountTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).offset(310);
+        make.centerX.equalTo(self.view);
+        make.width.equalTo(@210);
+    }];
+    
+    [self.doConvertActionButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).offset(360);
+        make.centerX.equalTo(self.view);
+        make.width.equalTo(@210);
+    }];
 }
 
-- (void)setupConvertFromButtonConstraints {
-    self.convertFromButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [NSLayoutConstraint activateConstraints:@[
-        [self.convertFromButton.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:250],
-        [self.convertFromButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor constant:-55],
-        [self.convertFromButton.widthAnchor constraintEqualToConstant:100],
-        [self.convertFromButton.heightAnchor constraintEqualToConstant:50]
-    ]];
-}
-
-- (void)setupConvertToButtonConstraints {
-    self.convertToButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [NSLayoutConstraint activateConstraints:@[
-        [self.convertToButton.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:250],
-        [self.convertToButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor constant:55],
-        [self.convertToButton.widthAnchor constraintEqualToConstant:100],
-        [self.convertToButton.heightAnchor constraintEqualToConstant:50]
-    ]];
-}
-
-- (void)setupCurrencyAmountTextFieldConstraints {
-    self.currencyAmountTextField.translatesAutoresizingMaskIntoConstraints = NO;
-    [NSLayoutConstraint activateConstraints:@[
-        [self.currencyAmountTextField.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:310],
-        [self.currencyAmountTextField.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-        [self.currencyAmountTextField.widthAnchor constraintEqualToConstant:210]
-    ]];
-}
-
-- (void)setupDoConvertActionButtonConstraints {
-    self.doConvertActionButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [NSLayoutConstraint activateConstraints:@[
-        [self.doConvertActionButton.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:360],
-        [self.doConvertActionButton.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
-        [self.doConvertActionButton.widthAnchor constraintEqualToConstant:210]
-    ]];
-}
 #pragma mark action setup
 - (void)setupActions {
     [self.convertFromButton addTarget:self action:@selector(convertFromButtonTapped) forControlEvents:UIControlEventTouchUpInside];
