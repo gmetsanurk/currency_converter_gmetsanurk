@@ -28,6 +28,8 @@ targets:
     sources: [CurrencyConverter]
     info:
         path: CurrencyConverter/Info.plist
+        properties:
+          UILaunchStoryboardName: "LaunchScreen" # Launch screen interface file base name
     dependencies:
         - package: RealmSwift
         - package: Swinject
