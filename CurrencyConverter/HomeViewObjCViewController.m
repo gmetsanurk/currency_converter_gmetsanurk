@@ -79,7 +79,7 @@ double someOtherFunc(int a) {
 
 - (void)setupConvertFromButton {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setTitle:@"From" forState:UIControlStateNormal];
+    [button setTitle:NSLocalizedString(@"home_view.from", @"From button") forState:UIControlStateNormal];
     button.backgroundColor = [UIColor systemBlueColor];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     button.layer.cornerRadius = 10;
@@ -89,7 +89,7 @@ double someOtherFunc(int a) {
 
 - (void)setupConvertToButton {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setTitle:@"To" forState:UIControlStateNormal];
+    [button setTitle:NSLocalizedString(@"home_view.to", @"To button") forState:UIControlStateNormal];
     button.backgroundColor = [UIColor systemBlueColor];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     button.layer.cornerRadius = 10;
@@ -99,7 +99,7 @@ double someOtherFunc(int a) {
 
 - (void)setupCurrencyAmountTextField {
     UITextField *textField = [[UITextField alloc] init];
-    textField.placeholder = @"Enter Amount";
+    textField.placeholder = NSLocalizedString(@"home_view.enter_amount", @"Enter amount textField sign");
     textField.borderStyle = UITextBorderStyleRoundedRect;
     textField.keyboardType = UIKeyboardTypeNumberPad;
     self.currencyAmountTextField = textField;
@@ -108,7 +108,7 @@ double someOtherFunc(int a) {
 
 - (void)setupDoConvertActionButton {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setTitle:@"Convert" forState:UIControlStateNormal];
+    [button setTitle:NSLocalizedString(@"home_view.convert", @"Convert button") forState:UIControlStateNormal];
     button.backgroundColor = [UIColor systemBlueColor];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     button.layer.cornerRadius = 10;
