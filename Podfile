@@ -2,6 +2,7 @@
 platform :ios, '14.0'
 
 def common_pods
+  pod 'Masonry'
   pod 'SnapKit', '~> 5.7.1'
   pod 'Moya', '~> 15.0'
   pod 'Moya/Combine', '~> 15.0'
