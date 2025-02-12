@@ -32,7 +32,8 @@ Pod::Spec.new do |spec|
   
   spec.swift_version = "5.0"
   spec.ios.deployment_target = "14.0"
-
+  spec.tvos.deployment_target = "14.0"
+  
   spec.source_files  = "Sources/NetworkManager/**/*.{swift,h,m}"
   #spec.exclude_files = "Classes/Exclude"
   # spec.public_header_files = "Classes/**/*.h"

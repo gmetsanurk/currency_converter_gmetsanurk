@@ -9,14 +9,23 @@ def common_pods
   pod 'NetworkManager', :path => 'NetworkManager'
 end
 
-target 'CurrentConverterApp' do
+target 'CurexConverter' do
   common_pods
 end
 
-target 'CurrentConverterAppTests' do
+target 'CurexConverter-ObjC' do
   common_pods
 end
 
-target 'CurrentConverterAppUITests' do
+target 'CurexConverter-tvOS' do
+  platform :tvos, '14.0'
+  common_pods
+end
+
+target 'CurexConverterTests' do
+  common_pods
+end
+
+target 'CurexConverterUITests' do
   common_pods
 end

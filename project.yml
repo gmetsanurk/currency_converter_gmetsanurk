@@ -17,12 +17,11 @@ packages:
   #NetworkManager:
     #path: NetworkManager
 targets:
-  CurrentConverterApp:
+  CurexConverter:
     settings:
         base:
-        #SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_DELEGATES'
+          #SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_DELEGATES'
           SWIFT_VERSION: 5.0 # Since GitHub does not have Xcode 16 for now
-          SWIFT_OBJC_BRIDGING_HEADER: "CurrencyConverter/CurrentConverterApp-Bridging-Header.h"
     type: application
     platform: iOS
     sources: [CurrencyConverter]
@@ -38,26 +37,64 @@ targets:
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
-  CurrentConverterAppTests:
+  CurexConverter-ObjC:
+    settings:
+        base:
+          SWIFT_VERSION: 5.0
+          SWIFT_OBJC_BRIDGING_HEADER: "CurrencyConverter/CurrentConverterApp-Bridging-Header.h"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_OBJC'
+          OTHER_CFLAGS: '$(inherited) -DUSING_OBJC'
+    type: application
+    platform: iOS
+    sources: [CurrencyConverter]
+    info:
+        path: CurrencyConverter/Info.plist
+        properties:
+          UILaunchStoryboardName: "LaunchScreen"
+    dependencies:
+        - package: RealmSwift
+        - package: Swinject
+    postCompileScripts:
+        - script: "mint run swiftlint"
+          name: SwiftLint
+  CurexConverter-tvOS:
+    settings:
+        base:
+          SWIFT_VERSION: 5.0
+          #SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_TVOS'
+    type: application
+    platform: tvOS
+    sources: [CurrencyConverter]
+    info:
+        path: CurrencyConverter/Info.plist
+        properties:
+          UILaunchStoryboardName: "LaunchScreen" # Launch screen interface file base name
+    dependencies:
+        - package: RealmSwift
+        - package: Swinject
+    postCompileScripts:
+        - script: "mint run swiftlint"
+          name: SwiftLint
+  CurexConverterTests:
     type: bundle.unit-test
     platform: iOS
     sources: [CurrentConverterAppTests]
     dependencies:
-      - target: CurrentConverterApp
+      - target: CurexConverter
       - package: Mocker
     info:
         path: CurrentConverterAppTests/Info.plist
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
-  CurrentConverterAppUITests:
+  CurexConverterUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
       - CurrentConverterAppUITests
       - CurrencyConverter/AccessibilityIdentifiers.swift
     dependencies:
-      - target: CurrentConverterApp
+      - target: CurexConverter
     info:
         path: CurrentConverterAppUITests/Info.plist
     postCompileScripts:

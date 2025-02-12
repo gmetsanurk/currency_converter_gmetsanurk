@@ -5,7 +5,12 @@ protocol Coordinator {
     func openCurrenciesScreen(onCurrencySelected: @escaping SelectCurrencyScreenHandler)
 }
 
+
+#if USING_OBJC
 private typealias HomeViewClass = HomeViewObjCViewController
+#elseif !USING_OBJC
+private typealias HomeViewClass = HomeView
+#endif
 
 struct UIKitCoordinator: Coordinator {
     unowned var window: UIWindow

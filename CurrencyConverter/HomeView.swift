@@ -43,7 +43,10 @@ class HomeView: UIViewController {
         createConvertToButton()
         createTextField()
         createDoConvertActionButton()
+        
+#if os(iOS)
         createKeyboard()
+#endif
     }
     
     /* override func viewDidAppear(_ animated: Bool) {
@@ -74,23 +77,7 @@ extension HomeView: UITextFieldDelegate {
         currencyAmountTextField.placeholder = NSLocalizedString("home_view.enter_amount", comment: "Enter amount textField sign")
         view.addSubview(currencyAmountTextField)
         setupCurrencyAmountTextFieldConstraints()
-        createDoneButtonOnKeyboard()
         currencyAmountTextField.delegate = self
-    }
-    
-    func createDoneButtonOnKeyboard() {
-        let toolBar = UIToolbar()
-        toolBar.sizeToFit()
-        toolBar.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
-        let doneButton = UIBarButtonItem(title: NSLocalizedString("home_view.done", comment: "Done keyboard button"), style: .done, target: self, action: #selector(doneButtonTapped))
-        doneButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.keyboardDone
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolBar.items = [flexSpace, doneButton]
-        currencyAmountTextField.inputAccessoryView = toolBar
-    }
-    
-    @objc private func doneButtonTapped() {
-        currencyAmountTextField.resignFirstResponder()
     }
     
     func textField(_: UITextField, shouldChangeCharactersIn _: NSRange, replacementString string: String) -> Bool {
@@ -177,19 +164,6 @@ extension HomeView {
         setupConvertToButtonConstraints()
     }
     
-    func createKeyboard() {
-        keyboardWillShowNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.view.frame.origin.y = -200
-            }
-        keyboardWillHideNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.view.frame.origin.y = 0.0
-            }
-    }
-    
     func setupSelectCurrencyLabelConstraints() {
         selectedCurrencyLabel.snp.makeConstraints { make in
             make.centerX.equalTo(view)
@@ -237,6 +211,40 @@ extension HomeView {
             make.height.equalTo(40)
         }
     }
+}
+
+extension HomeView {
+#if os(iOS)
+    func createKeyboard() {
+        keyboardWillShowNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.view.frame.origin.y = -200
+            }
+        keyboardWillHideNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.view.frame.origin.y = 0.0
+            }
+        createDoneButtonOnKeyboard()
+    }
+
+    func createDoneButtonOnKeyboard() {
+         let toolBar = UIToolbar()
+         toolBar.sizeToFit()
+         toolBar.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+         let doneButton = UIBarButtonItem(title: NSLocalizedString("home_view.done", comment: "Done keyboard button"), style: .done, target: self, action: #selector(doneButtonTapped))
+         doneButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.keyboardDone
+         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+         toolBar.items = [flexSpace, doneButton]
+         currencyAmountTextField.inputAccessoryView = toolBar
+     }
+    
+    @objc private func doneButtonTapped() {
+        currencyAmountTextField.resignFirstResponder()
+    }
+    
+#endif
 }
 
 extension HomeView: AnyHomeView {

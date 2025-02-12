@@ -1,4 +1,6 @@
-#import "CurrentConverterApp-Swift.h"
+#if USING_OBJC
+
+#import "CurexConverter_ObjC-Swift.h"
 #import "HomeViewObjCViewController.h"
 #import "Masonry.h"
 
@@ -55,7 +57,10 @@ double someOtherFunc(int a) {
     [self setupView];
     [self setupConstraints];
     [self setupActions];
+    
+#if !TARGET_OS_TV
     [self setupKeyboardObservers];
+#endif
     
     self.presenter = [[HomePresenter alloc] initWithView: self];
 
@@ -275,9 +280,6 @@ double someOtherFunc(int a) {
 
 # pragma mark - keybord creation
 
-/*- (void)textFieldDidBeginEditing:(UITextField *)textField {
-    NSLog(@"textFieldDidBeginEditing called: %@", textField);
-}*/
 
 - (void)setupKeyboardObservers {
     __weak typeof(self) weakSelf = self;
@@ -318,3 +320,5 @@ double someOtherFunc(int a) {
 }
 
 @end
+
+#endif
