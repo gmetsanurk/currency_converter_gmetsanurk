@@ -16,3 +16,5 @@ jobs:
           xcode-version: 16.1
       - name: Setup project
         run: ./setup.sh
+      - name: Build and test
+        run: xcodebuild test -project CurrentConverter.xcworkspace -scheme CurexConverter -destination "platform=iOS Simulator,OS=18.0,name=iPhone 15"
