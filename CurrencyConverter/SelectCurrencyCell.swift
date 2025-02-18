@@ -11,7 +11,7 @@ class SelectCurrencyCell: UICollectionViewCell, CustomizableCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        backgroundColor = .blue
+        backgroundColor = AppColors.selectCurrencyScreenCellColor
         let someLabel = UILabel()
         contentView.addSubview(someLabel)
         someLabel.snp.makeConstraints { make in

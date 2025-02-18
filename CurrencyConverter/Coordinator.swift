@@ -5,6 +5,13 @@ protocol Coordinator {
     func openCurrenciesScreen(onCurrencySelected: @escaping SelectCurrencyScreenHandler)
 }
 
+
+#if USING_OBJC
+private typealias HomeViewClass = HomeViewObjCViewController
+#elseif !USING_OBJC
+private typealias HomeViewClass = HomeView
+#endif
+
 struct UIKitCoordinator: Coordinator {
     unowned var window: UIWindow
 
@@ -16,7 +23,7 @@ struct UIKitCoordinator: Coordinator {
         if let someScreen = window.rootViewController, let presentedViewController = someScreen.presentedViewController as? SelectCurrencyScreen {
             presentedViewController.dismiss(animated: true)
         } else {
-            window.rootViewController = HomeView()
+            window.rootViewController = HomeViewClass()
             window.makeKeyAndVisible()
         }
     }
@@ -24,11 +31,12 @@ struct UIKitCoordinator: Coordinator {
     func openCurrenciesScreen(onCurrencySelected: @escaping SelectCurrencyScreenHandler) {
         let selectCurrenciesScreen = SelectCurrencyScreen()
         selectCurrenciesScreen.onCurrencySelected = onCurrencySelected
-        if let homeView = window.rootViewController as? HomeView {
+        if let homeView = window.rootViewController as? AnyHomeView {
             homeView.present(screen: selectCurrenciesScreen)
         } else if window.rootViewController == nil {
-            window.rootViewController = HomeView()
+            window.rootViewController = HomeViewClass()
             window.makeKeyAndVisible()
+            (window.rootViewController as? AnyScreen)?.present(screen: selectCurrenciesScreen)
         }
     }
 }
