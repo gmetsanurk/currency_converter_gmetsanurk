@@ -1,5 +1,5 @@
 import Combine
-@testable import CurrentConverterApp
+@testable import CurexConverter
 import Mocker
 import Moya
 @testable import NetworkManager
