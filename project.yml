@@ -28,7 +28,8 @@ targets:
           UILaunchStoryboardName: "LaunchScreen" # Launch screen interface file base name
     dependencies:
         - package: RealmSwift
-        - framework: Swinject
+        - framework: Carthage/Build/Swinject.xcframework
+          embed: false
         #- package: NetworkManager
         #- target: NetworkManager
     postCompileScripts:
@@ -50,7 +51,8 @@ targets:
           UILaunchStoryboardName: "LaunchScreen"
     dependencies:
         - package: RealmSwift
-        - framework: Swinject
+        - framework: Carthage/Build/Swinject.xcframework
+          embed: false
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
@@ -68,7 +70,8 @@ targets:
           UILaunchStoryboardName: "LaunchScreen" # Launch screen interface file base name
     dependencies:
         - package: RealmSwift
-        - framework: Swinject
+        - framework: Carthage/Build/Swinject.xcframework
+          embed: false
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
