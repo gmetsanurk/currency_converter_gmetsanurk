@@ -7,10 +7,7 @@ options:
 packages:
   RealmSwift:
     url: https://github.com/realm/realm-swift
-    version: 10.54.2
-  Swinject:
-    url: https://github.com/Swinject/Swinject.git
-    version: 2.9.1
+    version: 10.49.0
   Mocker:
     url: https://github.com/WeTransfer/Mocker
     version: 3.0.2
@@ -31,7 +28,7 @@ targets:
           UILaunchStoryboardName: "LaunchScreen" # Launch screen interface file base name
     dependencies:
         - package: RealmSwift
-        - package: Swinject
+        - framework: Swinject
         #- package: NetworkManager
         #- target: NetworkManager
     postCompileScripts:
@@ -53,7 +50,7 @@ targets:
           UILaunchStoryboardName: "LaunchScreen"
     dependencies:
         - package: RealmSwift
-        - package: Swinject
+        - framework: Swinject
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
@@ -71,7 +68,7 @@ targets:
           UILaunchStoryboardName: "LaunchScreen" # Launch screen interface file base name
     dependencies:
         - package: RealmSwift
-        - package: Swinject
+        - framework: Swinject
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
