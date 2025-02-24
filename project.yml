@@ -29,7 +29,6 @@ targets:
     dependencies:
         - package: RealmSwift
         - framework: Carthage/Build/Swinject.xcframework
-          embed: false
         #- package: NetworkManager
         #- target: NetworkManager
     postCompileScripts:
@@ -52,7 +51,6 @@ targets:
     dependencies:
         - package: RealmSwift
         - framework: Carthage/Build/Swinject.xcframework
-          embed: false
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
@@ -71,7 +69,6 @@ targets:
     dependencies:
         - package: RealmSwift
         - framework: Carthage/Build/Swinject.xcframework
-          embed: false
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
