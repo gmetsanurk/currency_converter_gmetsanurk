@@ -18,6 +18,9 @@ else
     exit 1
 fi
 
+# Carthage dependencies
+mint run carthage bootstrap --use-xcframeworks --platform iOS,tvOS
+
 # Generate Xcode project
 echo "Generating Xcode project..."
 mint run xcodegen || { echo "Error: Cannot generate Xcode project"; exit 3; }
