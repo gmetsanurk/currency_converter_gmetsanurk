@@ -65,8 +65,7 @@ double someOtherFunc(int a) {
     
     self.presenter = [[HomePresenter alloc] initWithView: self];
 
-    fff();
-    // const char* sss = fff();
+    const char* sss = fff();
     
     _constants = createUIConstants(200);
     int aaa = _constants.selectedCurrencyLabelTop;

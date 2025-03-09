@@ -2,12 +2,11 @@
 //  SomeCppClass.cpp
 //  CurexConverter-ObjC
 //
-//  Created by roman roman on 09.03.2025.
+//  Created by roman podymov on 09.03.2025.
 //
 
 #include "SomeCppClass.hpp"
 
-// #include <Foundation/Foundation.h>
 #include <string>
 
 const void* fff(void) {
