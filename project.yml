@@ -23,7 +23,7 @@ targets:
     platform: iOS
     sources: [CurrencyConverter]
     info:
-        path: CurrencyConverter/Info.plist
+        path: CurrencyConverter/Resources/Info.plist
         properties:
           UILaunchStoryboardName: "LaunchScreen" # Launch screen interface file base name
     dependencies:
@@ -45,7 +45,7 @@ targets:
     platform: iOS
     sources: [CurrencyConverter]
     info:
-        path: CurrencyConverter/Info.plist
+        path: CurrencyConverter/Resources/Info.plist
         properties:
           UILaunchStoryboardName: "LaunchScreen"
     dependencies:
@@ -63,7 +63,7 @@ targets:
     platform: tvOS
     sources: [CurrencyConverter]
     info:
-        path: CurrencyConverter/Info.plist
+        path: CurrencyConverter/Resources/Info.plist
         properties:
           UILaunchStoryboardName: "LaunchScreen" # Launch screen interface file base name
     dependencies:
@@ -80,7 +80,7 @@ targets:
       - target: CurexConverter
       - package: Mocker
     info:
-        path: CurrentConverterAppTests/Info.plist
+        path: CurrentConverterAppTests/iOS/Info.plist
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
