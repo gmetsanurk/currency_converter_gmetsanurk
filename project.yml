@@ -100,8 +100,10 @@ targets:
   CurexConverterObjCUITests:
     settings:
       base:
-        SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_OBJC'
-        OTHER_CFLAGS: '$(inherited) -DUSING_OBJC'
+          SWIFT_VERSION: 5.0
+          SWIFT_OBJC_BRIDGING_HEADER: "CurrencyConverter/CurrentConverterApp-Bridging-Header.h"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) USING_OBJC'
+          OTHER_CFLAGS: '$(inherited) -DUSING_OBJC'
     type: bundle.ui-testing
     platform: iOS
     sources:

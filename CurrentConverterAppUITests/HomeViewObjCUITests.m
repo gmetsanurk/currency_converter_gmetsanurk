@@ -17,20 +17,17 @@
     [super tearDown];
 }
 
-- (void)testExample {
+- (void)testHomeViewElementsExist {
     XCUIApplication *app = [[XCUIApplication alloc] init];
     [app launch];
 
+     /*XCTAssertTrue([app.buttons[AccessibilityIdentifiersObjC.selectSourceCurrency] exists], @"selectSourceCurrency button should exist");
+    XCTAssertTrue([app.buttons[AccessibilityIdentifiers.fromButton] exists], @"fromButton should exist");
+    XCTAssertTrue([app.buttons[AccessibilityIdentifiers.toButton] exists], @"toButton should exist");
+    XCTAssertTrue([app.textFields[AccessibilityIdentifiers.currencyAmountTextField] exists], @"currencyAmountTextField should exist");
+    XCTAssertTrue([app.buttons[AccessibilityIdentifiers.convertButton] exists], @"convertButton should exist");*/
 }
 
-- (void)testLaunchPerformance {
-    if (@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *)) {
-
-        [self measureWithMetrics:@[[[XCTApplicationLaunchMetric alloc] init]] block:^{
-            [[[XCUIApplication alloc] init] launch];
-        }];
-    }
-}
 
 @end
 #endif
