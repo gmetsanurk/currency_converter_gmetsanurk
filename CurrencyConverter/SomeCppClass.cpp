@@ -9,8 +9,13 @@
 
 #include <string>
 
-const void* fff(void) {
-    std::string s = "Hello";
-    std::string s2 = "World";
-    return (s + s2).c_str();
+class Translator {
+    
+};
+
+const void* translate(TranslationKey key) {
+    switch (key) {
+        return "";
+    }
+    return "";
 }

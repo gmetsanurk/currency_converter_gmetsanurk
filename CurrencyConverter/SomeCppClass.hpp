@@ -12,7 +12,16 @@
 
 CF_EXTERN_C_BEGIN
 
-const void* fff(void);
+union Some {
+    char a;
+    char b[10];
+};
+
+typedef enum {
+    TranslationKeySome
+} TranslationKey;
+
+const void* translate(TranslationKey key);
 
 CF_EXTERN_C_END
 
