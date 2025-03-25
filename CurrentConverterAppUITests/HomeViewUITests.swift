@@ -1,6 +1,6 @@
 import XCTest
 
-final class CurrentConverterAppUITests: XCTestCase {
+final class HomeViewUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         // XCUIApplication().launch()

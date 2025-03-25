@@ -97,6 +97,19 @@ targets:
     postCompileScripts:
         - script: "mint run swiftlint"
           name: SwiftLint
+  CurexConverterObjCUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - CurrentConverterAppUITests
+      - CurrencyConverter/AccessibilityIdentifiers.swift
+    dependencies:
+      - target: CurexConverter-ObjC
+    info:
+        path: CurrentConverterAppUITests/Info.plist
+    postCompileScripts:
+        - script: "mint run swiftlint"
+          name: SwiftLint
 
 #  NetworkManager:
 #    type: framework
