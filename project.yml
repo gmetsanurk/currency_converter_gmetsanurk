@@ -89,7 +89,7 @@ targets:
     platform: iOS
     sources:
       - CurrentConverterAppUITests
-      - CurrencyConverter/AccessibilityIdentifiers.swift
+      - CurrencyConverter/Resources/AccessibilityIdentifiers.swift
     dependencies:
       - target: CurexConverter
     info:
@@ -108,7 +108,8 @@ targets:
     platform: iOS
     sources:
       - CurrentConverterAppUITests
-      - CurrencyConverter/AccessibilityIdentifiers.swift
+      - CurrencyConverter/Resources/AccessibilityIdentifiersObjC.h
+      - CurrencyConverter/Resources/AccessibilityIdentifiersObjC.m
     dependencies:
       - target: CurexConverter-ObjC
     info:

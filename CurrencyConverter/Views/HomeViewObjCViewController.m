@@ -2,6 +2,7 @@
 
 #import "CurexConverter_ObjC-Swift.h"
 #import "HomeViewObjCViewController.h"
+#import "AccessibilityIdentifiersObjC.h"
 #import "Masonry.h"
 #import "SomeCppClass.hpp"
 
@@ -99,6 +100,7 @@ double someOtherFunc(int a) {
 - (void)setupButtonOpenSourceCurrency {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setTitle:NSLocalizedString(@"home_view.select_source_currency", @"Select source curency") forState:UIControlStateNormal];
+    button.accessibilityIdentifier = [AccessibilityIdentifiersObjC selectSourceCurrency];
     button.backgroundColor = [UIColor clearColor];
     [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.buttonOpenSourceCurrency = button;
@@ -108,6 +110,7 @@ double someOtherFunc(int a) {
 - (void)setupConvertFromButton {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setTitle:NSLocalizedString(@"home_view.from", @"From button") forState:UIControlStateNormal];
+    button.accessibilityIdentifier = [AccessibilityIdentifiersObjC fromButton];
     button.backgroundColor = [UIColor systemBlueColor];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     button.layer.cornerRadius = 10;
@@ -118,6 +121,7 @@ double someOtherFunc(int a) {
 - (void)setupConvertToButton {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setTitle:NSLocalizedString(@"home_view.to", @"To button") forState:UIControlStateNormal];
+    button.accessibilityIdentifier = [AccessibilityIdentifiersObjC toButton];
     button.backgroundColor = [UIColor systemBlueColor];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     button.layer.cornerRadius = 10;
@@ -128,6 +132,7 @@ double someOtherFunc(int a) {
 - (void)setupCurrencyAmountTextField {
     UITextField *textField = [[UITextField alloc] init];
     textField.placeholder = NSLocalizedString(@"home_view.enter_amount", @"Enter amount textField sign");
+    textField.accessibilityIdentifier = [AccessibilityIdentifiersObjC currencyAmountTextField];
     textField.borderStyle = UITextBorderStyleRoundedRect;
     textField.keyboardType = UIKeyboardTypeNumberPad;
     textField.delegate = self;
@@ -138,6 +143,7 @@ double someOtherFunc(int a) {
 - (void)setupDoConvertActionButton {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     [button setTitle:NSLocalizedString(@"home_view.convert", @"Convert button") forState:UIControlStateNormal];
+    button.accessibilityIdentifier = [AccessibilityIdentifiersObjC convertButton];
     button.backgroundColor = [UIColor systemBlueColor];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     button.layer.cornerRadius = 10;

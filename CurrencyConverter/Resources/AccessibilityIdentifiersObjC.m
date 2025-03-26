@@ -1,41 +1,29 @@
-#import <Foundation/Foundation.h>
 #if USING_OBJC
 #import "AccessibilityIdentifiersObjC.h"
 
-@interface AccessibilityIdentifiersObjC ()
-
-- (NSString *)selectSourceCurrency;
-- (NSString *)fromButton;
-- (NSString *)toButton;
-- (NSString *)convertButton;
-- (NSString *)currencyAmountTextField;
-- (NSString *)keyboardDone;
-
-@end
-
 @implementation AccessibilityIdentifiersObjC
 
-- (NSString *)selectSourceCurrency {
++ (NSString *)selectSourceCurrency {
     return @"home_view.select_source_currency";
 }
 
-- (NSString *)fromButton {
++ (NSString *)fromButton {
     return @"home_view.from";
 }
 
-- (NSString *)toButton {
++ (NSString *)toButton {
     return @"home_view.to";
 }
 
-- (NSString *)convertButton {
++ (NSString *)convertButton {
     return @"home_view.convert";
 }
 
-- (NSString *)currencyAmountTextField {
++ (NSString *)currencyAmountTextField {
     return @"home_view.currency_amount_text_field";
 }
 
-- (NSString *)keyboardDone {
++ (NSString *)keyboardDone {
     return @"home_view.keyboard_done";
 }
 

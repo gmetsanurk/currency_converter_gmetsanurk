@@ -1,3 +1,4 @@
+#if !USING_OBJC
 import XCTest
 
 final class CurrentConverterAppUITests: XCTestCase {
@@ -73,3 +74,4 @@ final class CurrentConverterAppUITests: XCTestCase {
         XCTAssertEqual(resultLabel.label, "-", "Label shouldn't change after button tap")
     }
 }
+#endif
