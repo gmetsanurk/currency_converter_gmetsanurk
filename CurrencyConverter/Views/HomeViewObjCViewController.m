@@ -65,7 +65,9 @@ double someOtherFunc(int a) {
     
     self.presenter = [[HomePresenter alloc] initWithView: self];
 
-    const char* sss = translate(TranslationKeySome);
+    NSString* path = [NSBundle.mainBundle pathForResource:@"Localizable" ofType:@"strings"];
+    
+    const char* sss = translate(TranslationKeySome, [path cStringUsingEncoding:kCFStringEncodingUTF8]);
     
     _constants = createUIConstants(200);
     int aaa = _constants.selectedCurrencyLabelTop;

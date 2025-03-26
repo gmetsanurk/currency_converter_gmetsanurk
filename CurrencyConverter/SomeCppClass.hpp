@@ -21,7 +21,7 @@ typedef enum {
     TranslationKeySome
 } TranslationKey;
 
-const void* translate(TranslationKey key);
+const void* translate(TranslationKey key, const char* filename);
 
 CF_EXTERN_C_END
 

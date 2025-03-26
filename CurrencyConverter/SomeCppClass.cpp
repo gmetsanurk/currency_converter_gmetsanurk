@@ -7,15 +7,26 @@
 
 #include "SomeCppClass.hpp"
 
+#include <fstream>
 #include <string>
+#include <iostream>
 
 class Translator {
+public:
+    void open(const char* filename) {
+        // TODO
+    }
+    const void* translate(TranslationKey key) {
+        // TODO
+        return nullptr;
+    }
     
+private:
+    std::fstream file;
 };
 
-const void* translate(TranslationKey key) {
-    switch (key) {
-        return "";
-    }
-    return "";
+Translator translator;
+
+const void* translate(TranslationKey key, const char* filename) {
+    return translator.translate(key);
 }
