@@ -30,5 +30,17 @@
 }
 
 
+- (void)testCurrencyAmountTextField {
+    XCUIApplication *app = [[XCUIApplication alloc] init];
+    [app launch];
+
+    XCUIElement *textField = app.textFields[[AccessibilityIdentifiersObjC currencyAmountTextField]];
+    [textField tap];
+    [textField typeText:@"12345"];
+
+    XCTAssertEqualObjects(textField.value, @"12345", @"Text field should include entered amount");
+}
+
+
 @end
 #endif
