@@ -4,14 +4,6 @@
 
 @interface AccessibilityIdentifiersObjC ()
 
-
-@property (nonatomic, strong) NSString *selectSourceCurrency;
-@property (nonatomic, strong) NSString *fromButton;
-@property (nonatomic, strong) NSString *toButton;
-@property (nonatomic, strong) NSString *convertButton;
-@property (nonatomic, strong) NSString *currencyAmountTextField;
-@property (nonatomic, strong) NSString *keyboardDone;
-
 - (NSString *)selectSourceCurrency;
 - (NSString *)fromButton;
 - (NSString *)toButton;
