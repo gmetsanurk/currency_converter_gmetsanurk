@@ -22,7 +22,7 @@ protocol AnyHomeView: AnyScreen, AnyObject {
 }
 
 @objc
-class HomePresenter: NSObject {
+class HomeViewModel: NSObject {
     unowned var view: AnyHomeView!
 
     @objc
@@ -89,7 +89,7 @@ class HomePresenter: NSObject {
     }
 }
 
-extension HomePresenter {
+extension HomeViewModel {
     
     @MainActor
     func handleSelectSourceCurrency() async {

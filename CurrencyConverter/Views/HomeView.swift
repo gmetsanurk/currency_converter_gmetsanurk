@@ -17,7 +17,7 @@ class HomeView: UIViewController {
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
     
     private lazy var network = NetworkManager()
-    private lazy var presenter = HomePresenter(view: self)
+    private lazy var viewModel = HomeViewModel(view: self)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +32,7 @@ class HomeView: UIViewController {
 #else
         buttonOpenSourceCurrency = UIButton(primaryAction: UIAction { [unowned self] _ in
             Task { [weak self] in
-                await self?.presenter.handleSelectFromCurrency()
+                await self?.viewModel.handleSelectFromCurrency()
             }
         })
 #endif
@@ -114,7 +114,7 @@ extension HomeView {
             guard let amountTextString = currencyAmountTextField.text else {
                 return
             }
-            presenter.convertCurrency(amountText: amountTextString, fromCurrency: convertFromButtonSelected, toCurrency: convertToButtonSelected)
+            viewModel.convertCurrency(amountText: amountTextString, fromCurrency: convertFromButtonSelected, toCurrency: convertToButtonSelected)
         }, for: .touchUpInside)
         view.addSubview(doConvertActionButton)
         doConvertActionButton.backgroundColor = AppColors.homeViewButtonsBackgroundColor
@@ -142,7 +142,7 @@ extension HomeView {
             title: NSLocalizedString("home_view.from", comment: "From button")
         ) {
             Task { [weak self] in
-                await self?.presenter.handleSelectFromCurrency()
+                await self?.viewModel.handleSelectFromCurrency()
             }
         }
         convertFromButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.fromButton
@@ -156,7 +156,7 @@ extension HomeView {
             title: NSLocalizedString("home_view.to", comment: "To button")
         ) {
             Task { [weak self] in
-                await self?.presenter.handleSelectToCurrency()
+                await self?.viewModel.handleSelectToCurrency()
             }
         }
         convertToButton.accessibilityIdentifier = AccessibilityIdentifiers.HomeView.toButton

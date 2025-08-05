@@ -2,7 +2,7 @@ import Combine
 import SwiftUI
 
 class HomeViewSwiftUIController: UIHostingController<HomeViewSwiftUI> {
-    lazy var presenter = HomePresenter(view: self)
+    lazy var viewModel = HomeViewModel(view: self)
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -10,7 +10,7 @@ class HomeViewSwiftUIController: UIHostingController<HomeViewSwiftUI> {
 
         rootView.viewModel.$inputButtonPressed.sink { [weak self] _ in
             Task { [weak self] in
-                await self?.presenter.handleSelectSourceCurrency()
+                await self?.viewModel.handleSelectSourceCurrency()
             }
         }.store(in: &cancellables)
     }
