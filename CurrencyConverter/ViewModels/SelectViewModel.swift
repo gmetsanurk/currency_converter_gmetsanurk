@@ -1,6 +1,6 @@
 protocol AnySelectView: AnyScreen, AnyObject {}
 
-class SelectPresenter {
+class SelectViewModel {
     unowned var view: AnySelectView
 
     init(view: AnySelectView) {

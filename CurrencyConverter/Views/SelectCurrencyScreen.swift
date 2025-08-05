@@ -19,7 +19,7 @@ class SelectCurrencyScreen: UIViewController, AnySelectView {
     #endif
 
     private unowned var currenciesList: CollectionView<SelectCurrencyCell, CurrencyType>!
-    private lazy var presenter = SelectPresenter(view: self)
+    private lazy var viewModel = SelectViewModel(view: self)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +45,7 @@ class SelectCurrencyScreen: UIViewController, AnySelectView {
         }
         Task {
             do {
-                try self.currenciesList.data = await presenter.callDataBase()
+                try self.currenciesList.data = await viewModel.callDataBase()
             } catch {
                 print("Error: \(error)")
             }
